@@ -12,8 +12,13 @@ for (let prop in strValue) console.log(prop, strValue[prop], '█►', strValue.
 // by each element
 for (let val of strValue) console.log('►', val);
 
-strValue[3] = 'z'; // no effect, string is read-only
-console.log(strValue);
+console.log('\n- before = ', strValue);
+try {
+    strValue[3] = 'z'; // no effect, string is read-only AND no error in CommonJS
+} catch (e) {
+    console.log(e.message);
+}
+console.log('- after = ', strValue);
 
 console.log('\n░░░░░░░░░░░░░░░░ methods ░░░░░░░░░░░░░░░░');
 /*
@@ -39,3 +44,4 @@ console.log('lastIndexOf(\'l\') █►', strValue.lastIndexOf('l'), strValue.las
 
 console.log('slice(1:3) █►', strValue.slice(1,3));
 
+['Hello', 'Johnny', 'Cage'].forEach(el => console.log(el.concat('.'.repeat(10 - el.length)), '|   ', '|'));

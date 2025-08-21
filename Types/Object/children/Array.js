@@ -1,3 +1,5 @@
+import { monolog } from '../../../utils/monolog.js';
+
 const arr1 = ['H', 'e', 'l', 'l', 'o'];
 const arr2 = Array();
 // noinspection JSPrimitiveTypeWrapperUsage
@@ -39,4 +41,7 @@ console.log('arr1  █►', arr1.join(''));
 console.log('arr1 as obj  █►', Object.getOwnPropertyDescriptors(arr1));
 
 let props = Object.getOwnPropertyDescriptors(Object.getPrototypeOf(arr1));
-for (let prop in props) console.log('proto  █►', `${prop} = ${props[prop]?.value}`);
+
+for (let prop in props) monolog.pushStringParts(`proto  █►  ${prop} =`, props[prop]?.value?.toString());
+
+monolog.printLines();
