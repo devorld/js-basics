@@ -45,3 +45,5 @@ let props = Object.getOwnPropertyDescriptors(Object.getPrototypeOf(arr1));
 for (let prop in props) monolog.pushStringParts(`proto  █►  ${prop} =`, props[prop]?.value?.toString());
 
 monolog.printLines();
+
+console.dir(arr1, {showHidden: true, colors: true})

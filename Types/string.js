@@ -44,4 +44,11 @@ console.log('lastIndexOf(\'l\') █►', strValue.lastIndexOf('l'), strValue.las
 
 console.log('slice(1:3) █►', strValue.slice(1,3));
 
+console.log();
+
+console.groupCollapsed('table view');
+
+console.table(['Hello', 'Johnny', 'Cage'].map(el => ({ el, s: '|   ', t: '|' })));
 ['Hello', 'Johnny', 'Cage'].forEach(el => console.log(el.concat('.'.repeat(10 - el.length)), '|   ', '|'));
+
+console.groupEnd();
