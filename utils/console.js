@@ -28,23 +28,29 @@ const CONSOLE_TEXT_COLOR = {
     BgGray: '\x1b[100m',
 };
 
-const CTC = CONSOLE_TEXT_COLOR;
+debug: {
+    break debug;
 
-console.log(`${CTC.FgBlue}Lorem ipsum${CTC.Reset}`);
+    // disabled till debugging
+    // noinspection UnreachableCodeJS,JSUnusedAssignment
+    const CTC = CONSOLE_TEXT_COLOR;
 
-// region Group - Object under the hood
-console.groupCollapsed('Group - Object under the hood');
+    console.log(`${CTC.FgBlue}Lorem ipsum${CTC.Reset}`);
 
-console.dir(Object, {showHidden: true, colors: true, depth: null});
+    // region Group - Object under the hood
+    console.groupCollapsed('Group - Object under the hood');
 
-console.groupEnd();
-// endregion
+    console.dir(Object, {showHidden: true, colors: true, depth: null});
 
-console.table(Object.getOwnPropertyDescriptors(Object));
+    console.groupEnd();
+    // endregion
 
-console.assert(CTC.hasOwnProperty('BgGray'), 'Color %s not found!', 'gray');
-console.assert(CTC.hasOwnProperty('BgGrey'), `${CTC.BgRed}Color %s not found!${CTC.Reset}`, 'grey');
+    console.table(Object.getOwnPropertyDescriptors(Object));
 
-console.trace('Lorem', 'ipsum', 0);
+    console.assert(CTC.hasOwnProperty('BgGray'), 'Color %s not found!', 'gray');
+    console.assert(CTC.hasOwnProperty('BgGrey'), `${CTC.BgRed}Color %s not found!${CTC.Reset}`, 'grey');
+
+    console.trace('Lorem', 'ipsum', 0);
+}
 
 export { CONSOLE_TEXT_COLOR };
