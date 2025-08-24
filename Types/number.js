@@ -1,3 +1,8 @@
+import { monolog } from "../utils/monolog.js";
+
+const printAdd = monolog?.pushStringParts?.bind(monolog) || console.log;
+const printAll = monolog?.printLines?.bind(monolog) || console.log;
+
 console.log('\n░░░░░░░░░░░░░░░░ big value ░░░░░░░░░░░░░░░░');
 
 let bvalue = 1_0_0_0_0_0_0;
@@ -15,7 +20,13 @@ console.log('value === 1e-6 === .001e-3 █►', svalue === 1e-6, svalue === .00
 
 console.log('\n░░░░░░░░░░░░░░░░ conversion ░░░░░░░░░░░░░░░░');
 
-console.log(123..toString(), 123.0.toString(), (123).toString());
+printAdd('', '█►', ('.123.4'), ('123.4'), ('123e4'));
+printAdd('Number()', '█►', Number('.123.4'), Number('123.4'), Number('123e4'));
+printAdd('parseInt()', '█►', parseInt('.123.4'), parseInt('123.4'), parseInt('123e4'));
+printAdd('parseFloat()', '█►', parseFloat('.123.4'), parseFloat('123..4'), parseFloat('1.23.4'));
+printAdd('.toString()', '█►', 123..toString(), 123.0.toString(), (123).toString());
+printAdd('String()', '█►', String(123.), String(.123));
+printAll({ tableView: true });
 
 console.log('\n░░░░░░░░░░░░░░░░ comparison ░░░░░░░░░░░░░░░░');
 
