@@ -38,10 +38,12 @@ console.log('\n░░░░░░░░░░░░░░░░ NaN checks ░�
 console.log('Object.is(NaN, NaN) █►', Object.is(NaN, NaN), );
 console.log('isNaN        █►',        isNaN('s'),        isNaN(Infinity / Infinity),        isNaN('123'),        isNaN(NaN));
 console.log('Number.isNaN █►', Number.isNaN('s'), Number.isNaN(Infinity / Infinity), Number.isNaN('123'), Number.isNaN(NaN));
-console.log('isNaN === Number.isNaN █►', isNaN === Number.isNaN);
+console.log('isNaN === Number.isNaN  █►', isNaN === Number.isNaN);
+console.log('[\'NaN\'].indexOf(\'NaN\')  █►', ['NaN'].indexOf('NaN'));
+console.log('[\'NaN\'].includes(\'NaN\') █►', ['NaN'].includes('NaN'));
 
 try {
-    isNaN(10n);
+    console.log('isNaN(10n)', isNaN(10n));
 } catch (e) {
     console.log('Error:', e.message);
 }
