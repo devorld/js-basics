@@ -1,4 +1,4 @@
-import { getGraphemeCount } from "./graphemes.js";
+import {getGraphemeCount} from "./graphemes.js";
 
 let monolog;
 
@@ -7,6 +7,8 @@ monolog = monolog || new Monolog();
 function Monolog() {
     this._lines = [];
     this._partsMaxLengths = [];
+    this.printHeader = (text) => console.log(`\n▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ ${text} ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓`)
+    this.printSubHeader = (text) => console.log(`\n░░░░░░░░░░░░░░░░ ${text} ░░░░░░░░░░░░░░░░`)
     this.pushStringParts = function (...strParts) {
         strParts.forEach(((part, index, array) => {
             array[index] = Array.isArray(part) ? part.join('') : String(part)
@@ -17,7 +19,7 @@ function Monolog() {
         }));
         this._lines.push(strParts);
     }
-    this.printLines = function ({ keepMaxLengths, tableView } = {}) {
+    this.printLines = function ({keepMaxLengths, tableView} = {}) {
         if (!this._lines.length) return;
 
         if (!tableView) {
@@ -39,4 +41,4 @@ function Monolog() {
     }
 }
 
-export { monolog };
+export {monolog};
