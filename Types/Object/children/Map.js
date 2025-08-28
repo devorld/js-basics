@@ -74,8 +74,17 @@ p.buff(`${p.cVar}array${p.cNo}OfPairs = Object.entries(mapObj)`, '█►', array
 
 const mapFrom_ArrayOfPairs = new Map(arrayOfPairs);
 p.buff(`${p.cVar}map${p.cNo}From_ArrayOfPairs = new Map(arrayOfPairs)`, '█►', mapFrom_ArrayOfPairs);
+p.flush();
 
-p.buff(`${p.cVar}obj${p.cNo}FromMap = Object.fromEntries(map_pairs.entries())`, '█►', Object.fromEntries(mapFrom_ArrayOfPairs.entries()));
+p.buff(`${p.cVar}obj${p.cNo}FromMap = Object.fromEntries(map_pairs.entries())`, '█►');
+p.flush();
+
+p.buff('█►', Object.fromEntries(mapFrom_ArrayOfPairs.entries()));
+p.flush();
+
 p.buff('same');
-p.buff(`${p.cVar}obj${p.cNo}FromMap = Object.fromEntries(map_pairs)`, '█►', Object.fromEntries(mapFrom_ArrayOfPairs));
+p.buff(`${p.cVar}obj${p.cNo}FromMap = Object.fromEntries(map_pairs)`, '█►');
+p.flush();
+
+p.buff('█►', Object.fromEntries(mapFrom_ArrayOfPairs));
 p.flush();
