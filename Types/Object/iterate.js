@@ -1,6 +1,8 @@
 import {monolog} from '../../utils/monolog.js'
 import {CONSOLE_TEXT_COLOR} from '../../utils/console.js'
 
+// noinspection JSUnresolvedReference - analogue of __name__ == "__main__"
+const isMainModule = import.meta.main;
 const printHeader = monolog?.printHeader || console.log;
 const printAdd = monolog?.pushStringParts?.bind(monolog) || console.log;
 const printAll = monolog?.printLines?.bind(monolog) || console.log;
@@ -8,8 +10,6 @@ const cVar = CONSOLE_TEXT_COLOR?.FgBlue || '';
 const cNo = CONSOLE_TEXT_COLOR?.Reset || '';
 
 //region ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ Randomizer - integer values [from 0, to 10) ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-printHeader('Randomizer - 10 integer values [from 0, to 10)');
-
 const randomizer0to5 = {
     [Symbol.iterator]: () => ({
         // single executed
@@ -30,25 +30,26 @@ const randomizer5to10 = {
     }),
 };
 
-const randoms = [];
+if (isMainModule) {
+    printHeader('Randomizer - 10 integer values [from 0, to 10)');
+    const randoms = [];
 
-for (let value of randomizer0to5) {
-    randoms.push(value);
+    for (let value of randomizer0to5) {
+        randoms.push(value);
 
-    if (randoms.length >= 5) break;
+        if (randoms.length >= 5) break;
+    }
+    for (let value of randomizer5to10) {
+        randoms.push(value);
+
+        if (randoms.length >= 10) break;
+    }
+    printAdd(`${cVar}randomizer0to10${cNo}`, '█►', randoms.join(' '));
+    printAll();
 }
-for (let value of randomizer5to10) {
-    randoms.push(value);
-
-    if (randoms.length >= 10) break;
-}
-printAdd(`${cVar}randomizer0to10${cNo}`, '█►', randoms.join(' '));
-printAll();
 //endregion
 
 //region ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ powerOfTwo ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-printHeader('powerOfTwo');
-
 const powerOfTwo = {
     [Symbol.iterator]: () => ({
         // get iterator
@@ -63,21 +64,24 @@ const powerOfTwo = {
         last: 2 ** 16,
     }),
 };
-const pot = [];
 
-for (let value of powerOfTwo) {
-    pot.push(value);
+if (isMainModule) {
+    printHeader('powerOfTwo');
+
+    const pot = [];
+
+    for (let value of powerOfTwo) {
+        pot.push(value);
+    }
+
+    // noinspection JSCheckFunctionSignatures - typing requires .length property and [index] getter
+    printAdd(`${cVar}Array.from(powerOfTwo)${cNo}`, '█►', Array.from(powerOfTwo).join(' '));
+    printAdd(`${cVar}powerOfTwo${cNo}`, '█►', pot.join(' '));
+    printAll();
 }
-
-// noinspection JSCheckFunctionSignatures - typing requires .length property and [index] getter
-printAdd(`${cVar}Array.from(powerOfTwo)${cNo}`, '█►', Array.from(powerOfTwo).join(' '));
-printAdd(`${cVar}powerOfTwo${cNo}`, '█►', pot.join(' '));
-printAll();
 //endregion
 
 //region ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ rangeObj ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-printHeader('rangeObj');
-
 const rangeObj = {
     start: 3,
     end: 11,
@@ -94,38 +98,43 @@ const rangeObj = {
         }
     },
 };
-const ro = [];
 
-for (const v of rangeObj) {
-    ro.push(v);
+if (isMainModule) {
+    printHeader('rangeObj');
+
+    const ro = [];
+
+    for (const v of rangeObj) {
+        ro.push(v);
+    }
+    printAdd(`${cVar}rangeObj${cNo}`, '█►', ro.join(' '));
+    printAll();
 }
-printAdd(`${cVar}rangeObj${cNo}`, '█►', ro.join(' '));
-printAll();
 //endregion
 
 //region ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ rangeFunc ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-printHeader('rangeFunc');
+if (isMainModule) {
+    printHeader('rangeFunc');
 
-const rangeFunc = function* () {
-    yield 1;
-    yield 11;
-    yield 111;
-    yield 1111;
-    yield 11111;
-    yield* rangeSubFunc();
+    const rangeFunc = function* () {
+        yield 1;
+        yield 11;
+        yield 111;
+        yield 1111;
+        yield 11111;
+        yield* rangeSubFunc();
+    }
+
+    const rangeSubFunc = function* () {
+        yield 99999;
+    }
+
+    printAdd(`${cVar}rangeFunc${cNo}`, '█►', Array.from({[Symbol.iterator]: rangeFunc}, (v, i) => `${i}-> ${v / 10}`).join(' | '));
+    printAll();
 }
-
-const rangeSubFunc = function* () {
-    yield 99999;
-}
-
-printAdd(`${cVar}rangeFunc${cNo}`, '█►', Array.from({[Symbol.iterator]: rangeFunc}, (v, i) => `${i}-> ${v / 10}`).join(' | '));
-printAll();
 //endregion
 
 //region ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ iteratorSingleton ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-printHeader('iteratorSingleton');
-
 const iteratorSingleton = {
     value: 0,
     done: false,
@@ -140,19 +149,21 @@ const iteratorSingleton = {
     }
 }
 
-const is = [];
+if (isMainModule) {
+    printHeader('iteratorSingleton');
 
-for (const v of iteratorSingleton) {
-    is.push(v);
+    const is = [];
+
+    for (const v of iteratorSingleton) {
+        is.push(v);
+    }
+
+    printAdd(`${cVar}iteratorSingleton${cNo}`, '█►', is.join(' '));
+    printAll();
 }
-
-printAdd(`${cVar}iteratorSingleton${cNo}`, '█►', is.join(' '));
-printAll();
 //endregion
 
 //region ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ single value ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
-printHeader('single value');
-
 const iteratorSingleValue = {
     value: 37331,
     done: true,
@@ -166,12 +177,18 @@ const iteratorSingleValue = {
     }
 }
 
-const isv = [];
+if (isMainModule) {
+    printHeader('single value');
 
-for (const v of iteratorSingleValue) {
-    isv.push(v);
+    const isv = [];
+
+    for (const v of iteratorSingleValue) {
+        isv.push(v);
+    }
+
+    printAdd(`${cVar}single value${cNo}`, '█►', isv.join(' '));
+    printAll();
 }
-
-printAdd(`${cVar}single value${cNo}`, '█►', isv.join(' '));
-printAll();
 //endregion
+
+export {rangeObj, powerOfTwo};

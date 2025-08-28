@@ -41,3 +41,11 @@ function Constructor() {
     };
 }
 
+const arrayOfArrays = [
+    [1, 11],
+    [2, 22],
+    [5, 55],
+    [7, 77],
+];
+
+console.log('Object.fromEntries(arrayOfArrays) █►', Object.fromEntries(arrayOfArrays));
