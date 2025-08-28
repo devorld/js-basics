@@ -146,8 +146,10 @@ printAdd(`${cFunc}.slice()${cNo}d clone`, '█►', duplicated.join(''));
 // noinspection JSCheckFunctionSignatures - cohercion testing
 const sum = duplicated.concat(arr1, [1, 2, 3], 4, 5, [6], [7], [8, 9]);
 // noinspection SpellCheckingInspection - splited word
-printAdd(`${cFunc}.concat()${cNo}enated (авто-спред)`, '█►', sum);
-printAll({keepMaxLengths: true});
+printAdd(`${cFunc}.concat()${cNo}enated (авто-спред)`, '█►');
+printAll();
+printAdd(sum);
+printAll();
 //endregion
 
 //region ░░░░░░░░░░░░░░░░ .filter, .some, .every, reduce, reduceRight ░░░░░░░░░░░░░░░░

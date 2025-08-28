@@ -16,6 +16,8 @@ function Monolog() {
 
             const length = getGraphemeCount(array[index]);
 
+            if (length > 100) return;
+
             this._partsMaxLengths[index] = +this._partsMaxLengths[index] > length ? +this._partsMaxLengths[index] : length;
         }));
         this._lines.push(strParts);
@@ -26,7 +28,7 @@ function Monolog() {
         if (!tableView) {
             this._lines.forEach(strParts =>
                 console.log(...strParts.map((str, index) =>
-                        str.concat?.(' '.repeat(this._partsMaxLengths[index] - getGraphemeCount(str))) ?? str
+                        str.concat?.(' '.repeat(~~Math.max(this._partsMaxLengths[index] - getGraphemeCount(str), 0))) ?? str
                     )
                 )
             );
@@ -60,7 +62,9 @@ function CastToString(part, nestingLevel = 0) {
         case TN.WEAK_SET:
         case TN.WEAK_MAP:
         case TN.OBJECT:
-            result = `${typeName}(${Object.entries(part).length}) ${JSON.stringify(part)}`;
+            const symKeys = Object.getOwnPropertySymbols(part);
+            const symProps = symKeys.map(sKey => [sKey, part[sKey]]);
+            result = `${typeName}(${Object.entries(part).length}) ${JSON.stringify(part)}} +SymbolProps: ${CastToString(symProps)}`;
             break;
         default:
             result = String(part);
