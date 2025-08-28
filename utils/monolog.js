@@ -1,3 +1,4 @@
+import {getTypeName, TYPE_NAME as TN} from '../Types/index.js';
 import {getGraphemeCount} from "./graphemes.js";
 
 let monolog;
@@ -11,7 +12,7 @@ function Monolog() {
     this.printSubHeader = (text) => console.log(`\n░░░░░░░░░░░░░░░░ ${text} ░░░░░░░░░░░░░░░░`)
     this.pushStringParts = function (...strParts) {
         strParts.forEach(((part, index, array) => {
-            array[index] = Array.isArray(part) ? part.join('') : String(part)
+            array[index] = CastToString(part);
 
             const length = getGraphemeCount(array[index]);
 
@@ -25,7 +26,7 @@ function Monolog() {
         if (!tableView) {
             this._lines.forEach(strParts =>
                 console.log(...strParts.map((str, index) =>
-                        str.concat(' '.repeat(this._partsMaxLengths[index] - getGraphemeCount(str)))
+                        str.concat?.(' '.repeat(this._partsMaxLengths[index] - getGraphemeCount(str))) ?? str
                     )
                 )
             );
@@ -39,6 +40,30 @@ function Monolog() {
     this.resetMaxLengths = function () {
         this._partsMaxLengths.length = 0;
     }
+}
+
+function CastToString(part, nestingLevel = 0) {
+    const typeName = getTypeName(part);
+    let result;
+
+    switch (typeName) {
+        case TN.ARRAY:
+            result = nestingLevel > 0 ? '\n' : '';
+            result += '    '.repeat(nestingLevel) + `Array(${part.length}) [${part.map(el => CastToString(el, nestingLevel + 1)).join(',')}]`;
+            break;
+        case TN.MAP:
+        case TN.SET:
+            result = part;
+            break;
+        case TN.OBJECT:
+            result = `Object(${Object.entries(part).length}) ${JSON.stringify(part)}`;
+            break;
+        default:
+            result = String(part);
+            break;
+    }
+
+    return result;
 }
 
 export {monolog};

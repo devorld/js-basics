@@ -6,7 +6,7 @@ function getGraphemeCount(str) {
     // from \x1b[0m to \x1b[100m
     const ansiColorRegEx = /\x1b\[\d+m/gi;
 
-    return [...segmenter.segment(str.replaceAll(ansiColorRegEx, ''))].length;
+    return [...segmenter.segment(str.replaceAll?.(ansiColorRegEx, '').split('\n')[0] ?? str)].length;
 }
 
 export {ID_SPACE, getGraphemeCount};
