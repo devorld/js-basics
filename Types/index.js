@@ -9,12 +9,15 @@ const TYPE_NAME = {
     BIGINT: 'bigint',
     STRING: 'string',
     SYMBOL: 'symbol',
-    MAP: 'Map',
-    SET: 'Set',
     ARRAY: 'Array',
     OBJECT: 'Object',
     DATE: 'Date',
     FUNCTION: 'function',
+
+    SET: 'Set',
+    MAP: 'Map',
+    WEAK_SET: 'WeakSet',
+    WEAK_MAP: 'WeakMap',
 }
 
 function getTypeName(variable) {

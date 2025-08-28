@@ -20,13 +20,13 @@ p.buff(`${p.cVar}setObj${p.cNo}`, '█►', setObj.keys());
 // noinspection JSVoidFunctionReturnValueUsed
 p.buff(`setObj${p.cProp}.clear${p.cNo}()`, '█►', setObj.clear());
 p.buff("setObj - cleared", '█►', setObj);
-p.buff(`setObj${p.cProp}.add${p.cNo}(555)`, '█►', new Set(setObj.add(555)));
-p.buff(`setObj${p.cProp}.add${p.cNo}(666)`, '█►', new Set(setObj.add(666)));
-p.buff(`setObj${p.cProp}.add${p.cNo}(777)`, '█►', new Set(setObj.add(777)));
+p.buff(`setObj${p.cProp}.add${p.cNo}(555)`, '█►', setObj.add(555));
+p.buff(`setObj${p.cProp}.add${p.cNo}(666)`, '█►', setObj.add(666));
+p.buff(`setObj${p.cProp}.add${p.cNo}(777)`, '█►', setObj.add(777));
 p.buff(`${p.cVar}setObj${p.cNo}`, '█►', setObj);
 p.buff(`setObj${p.cProp}.delete${p.cNo}(666)`, '█►', setObj.delete(666));
 p.buff(`setObj${p.cProp}.delete${p.cNo}(666)`, '█►', setObj.delete(666));
-p.buff(`${p.cVar}setObj${p.cNo}`, '█►', new Set(setObj));
+p.buff(`${p.cVar}setObj${p.cNo}`, '█►', setObj);
 p.flush({keepMaxLengths: true});
 
 //region ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ new ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓

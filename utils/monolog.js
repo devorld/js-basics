@@ -51,12 +51,16 @@ function CastToString(part, nestingLevel = 0) {
             result = nestingLevel > 0 ? '\n' : '';
             result += '    '.repeat(nestingLevel) + `Array(${part.length}) [${part.map(el => CastToString(el, nestingLevel + 1)).join(',')}]`;
             break;
-        case TN.MAP:
         case TN.SET:
-            result = part;
+            result = new Set(part);
             break;
+        case TN.MAP:
+            result = new Map(part);
+            break;
+        case TN.WEAK_SET:
+        case TN.WEAK_MAP:
         case TN.OBJECT:
-            result = `Object(${Object.entries(part).length}) ${JSON.stringify(part)}`;
+            result = `${typeName}(${Object.entries(part).length}) ${JSON.stringify(part)}`;
             break;
         default:
             result = String(part);
