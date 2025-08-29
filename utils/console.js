@@ -28,6 +28,12 @@ const CONSOLE_TEXT_COLOR = {
     BgGray: '\x1b[100m',
 };
 
+const CTC = {
+    reset: CONSOLE_TEXT_COLOR.Reset,
+    func: CONSOLE_TEXT_COLOR.FgMagenta,
+    var: CONSOLE_TEXT_COLOR.FgBlue,
+};
+
 debug: {
     break debug;
 
@@ -53,4 +59,4 @@ debug: {
     console.trace('Lorem', 'ipsum', 0);
 }
 
-export { CONSOLE_TEXT_COLOR };
+export { CONSOLE_TEXT_COLOR, CTC };
