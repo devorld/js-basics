@@ -31,6 +31,7 @@ p.flush({keepMaxLengths: true});
 
 //region ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ new ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 p.head('new');
+// noinspection JSUnusedGlobalSymbols - properties for Set alike acceptance
 const setLikeObj = {
     size: 0,
     has: (el) => !!el,
