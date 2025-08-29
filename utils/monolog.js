@@ -12,7 +12,7 @@ function Monolog() {
     this.printSubHeader = (text) => console.log(`\n░░░░░░░░░░░░░░░░ ${text} ░░░░░░░░░░░░░░░░`)
     this.pushStringParts = function (...strParts) {
         strParts.forEach(((part, index, array) => {
-            array[index] = CastToString(part);
+            array[index] = castToString(part);
 
             const length = getGraphemeCount(array[index]);
 
@@ -21,7 +21,7 @@ function Monolog() {
             this._partsMaxLengths[index] = +this._partsMaxLengths[index] > length ? +this._partsMaxLengths[index] : length;
         }));
         this._lines.push(strParts);
-    }
+    };
     this.printLines = function ({keepMaxLengths, tableView} = {}) {
         if (!this._lines.length) return;
 
@@ -38,20 +38,20 @@ function Monolog() {
 
         if (!keepMaxLengths) this._partsMaxLengths.length = 0;
         this._lines.length = 0;
-    }
+    };
     this.resetMaxLengths = function () {
         this._partsMaxLengths.length = 0;
-    }
+    };
 }
 
-function CastToString(part, nestingLevel = 0) {
+function castToString(part, nestingLevel = 0) {
     const typeName = getTypeName(part);
     let result;
 
     switch (typeName) {
         case TN.ARRAY:
             result = nestingLevel > 0 ? '\n' : '';
-            result += '    '.repeat(nestingLevel) + `Array(${part.length}) [${part.map(el => CastToString(el, nestingLevel + 1)).join(',')}]`;
+            result += '    '.repeat(nestingLevel) + `Array(${part.length}) [${part.map(el => castToString(el, nestingLevel + 1)).join(',')}]`;
             break;
         case TN.SET:
             result = new Set(part);
@@ -64,7 +64,7 @@ function CastToString(part, nestingLevel = 0) {
         case TN.OBJECT:
             const symKeys = Object.getOwnPropertySymbols(part);
             const symProps = symKeys.map(sKey => [sKey, part[sKey]]);
-            result = `${typeName}(${Object.entries(part).length}) ${JSON.stringify(part)}} +SymbolProps: ${CastToString(symProps)}`;
+            result = `${typeName}(${Object.entries(part).length}) ${JSON.stringify(part)}} +SymbolProps: ${castToString(symProps)}`;
             break;
         default:
             result = String(part);
@@ -74,4 +74,11 @@ function CastToString(part, nestingLevel = 0) {
     return result;
 }
 
-export {monolog};
+const printer = {
+    head: monolog.printHeader,
+    title: monolog.printSubHeader,
+    buff: monolog.pushStringParts?.bind(monolog),
+    flush: monolog.printLines?.bind(monolog),
+};
+
+export {monolog, printer};
