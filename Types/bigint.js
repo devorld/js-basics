@@ -45,6 +45,7 @@ console.log('\n░░░░░░░░░░░░░░░░ comparison ░�
 
 console.log('100 > 10n works █►', 100 > 10n);
 console.log('100 < 10n works █►', 100 < 10n);
-// noinspection EqualityComparisonWithCoercionJS
+// noinspection EqualityComparisonWithCoercionJS,JSIncompatibleTypesComparison - example
 console.log('10 == 10n works █►', 10 == 10n);
+// noinspection JSIncompatibleTypesComparison - example
 console.log('10 === 10n doesn\'t █►', 10 === 10n);

@@ -39,9 +39,6 @@ function Monolog() {
         if (!keepMaxLengths) this._partsMaxLengths.length = 0;
         this._lines.length = 0;
     };
-    this.resetMaxLengths = function () {
-        this._partsMaxLengths.length = 0;
-    };
 }
 
 function castToString(part, nestingLevel = 0) {

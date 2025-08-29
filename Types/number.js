@@ -5,18 +5,18 @@ const printAll = monolog?.printLines?.bind(monolog) || console.log;
 
 console.log('\n░░░░░░░░░░░░░░░░ big value ░░░░░░░░░░░░░░░░');
 
-let bvalue = 1_0_0_0_0_0_0;
+let bigValue = 1_0_0_0_0_0_0;
 
-console.log('value █►', bvalue);
-console.log('value === 1e6 === 1000e3 █►', bvalue === 1e6, bvalue === 1000e3);
+console.log('value █►', bigValue);
+console.log('value === 1e6 === 1000e3 █►', bigValue === 1e6, bigValue === 1000e3);
 
 
 console.log('\n░░░░░░░░░░░░░░░░ small value ░░░░░░░░░░░░░░░░');
 
-let svalue = .0_0_0_0_0_1;
+let smallValue = .0_0_0_0_0_1;
 
-console.log('value █►', svalue);
-console.log('value === 1e-6 === .001e-3 █►', svalue === 1e-6, svalue === .001e-3);
+console.log('value █►', smallValue);
+console.log('value === 1e-6 === .001e-3 █►', smallValue === 1e-6, smallValue === .001e-3);
 
 console.log('\n░░░░░░░░░░░░░░░░ conversion ░░░░░░░░░░░░░░░░');
 
