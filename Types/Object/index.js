@@ -1,6 +1,9 @@
 import {CONSOLE_TEXT_COLOR} from '../../utils/console.js'
 import {monolog} from '../../utils/monolog.js'
 
+// noinspection JSUnresolvedReference - analogue of __name__ == "__main__"
+const isMainModule = import.meta.main;
+
 const p = {
     head: monolog?.printHeader || console.log,
     title: monolog?.printSubHeader || console.log,
@@ -11,7 +14,7 @@ const p = {
     cVar: CONSOLE_TEXT_COLOR?.FgBlue || '',
 };
 
-const obj1 = {
+const objExample = {
     a: 1,
     b: 3,
     c: Symbol(4),
@@ -22,26 +25,30 @@ const obj1 = {
     [Symbol('h')]: 9
 };
 
-p.buff(`${p.cVar}obj1${p.cNo}`, '█►', obj1);
-p.flush();
+if (isMainModule) {
+    p.buff(`${p.cVar}objExample${p.cNo}`, '█►', objExample);
+    p.flush();
 
-p.head("without Symbolic keys");
-p.title(".keys() .values() .entries()");
-p.buff(`JSON${p.cProp}.stringify${p.cNo}(obj1)`, '█►', JSON.stringify(obj1));
-p.buff(`Object${p.cProp}.keys${p.cNo}(obj1)`, '█►', Object.keys(obj1));
-p.buff(`Object${p.cProp}.values${p.cNo}(obj1)`, '█►', Object.values(obj1));
-p.buff(`Object${p.cProp}.entries${p.cNo}(obj1)`, '█►', Object.entries(obj1));
-p.buff(`Object${p.cProp}.getOwnPropertyNames${p.cNo}(obj1)`, '█►', Object.getOwnPropertyNames(obj1));
-p.buff(`Object${p.cProp}.getOwnPropertyDescriptors${p.cNo}(obj1)`, '█►', Object.getOwnPropertyDescriptors(obj1));
-p.flush();
+    p.head("without Symbolic keys");
+    p.title(".keys() .values() .entries()");
+    p.buff(`JSON${p.cProp}.stringify${p.cNo}(objExample)`, '█►', JSON.stringify(objExample));
+    p.buff(`Object${p.cProp}.keys${p.cNo}(objExample)`, '█►', Object.keys(objExample));
+    p.buff(`Object${p.cProp}.values${p.cNo}(objExample)`, '█►', Object.values(objExample));
+    p.buff(`Object${p.cProp}.entries${p.cNo}(objExample)`, '█►', Object.entries(objExample));
+    p.buff(`Object${p.cProp}.getOwnPropertyNames${p.cNo}(objExample)`, '█►', Object.getOwnPropertyNames(objExample));
+    p.buff(`Object${p.cProp}.getOwnPropertyDescriptors${p.cNo}(objExample)`, '█►', Object.getOwnPropertyDescriptors(objExample));
+    p.flush();
 
-p.head("only Symbolic keys");
-p.buff(`Object${p.cProp}.getOwnPropertySymbols${p.cNo}(obj1)`, '█►', Object.getOwnPropertySymbols(obj1));
-p.flush();
+    p.head("only Symbolic keys");
+    p.buff(`Object${p.cProp}.getOwnPropertySymbols${p.cNo}(objExample)`, '█►', Object.getOwnPropertySymbols(objExample));
+    p.flush();
 
-p.head("with Symbolic keys");
-p.buff(`Reflect${p.cProp}.ownKeys${p.cNo}(obj1)`, '█►', Reflect.ownKeys(obj1));
-p.buff();
+    p.head("with Symbolic keys");
+    p.buff(`Reflect${p.cProp}.ownKeys${p.cNo}(objExample)`, '█►', Reflect.ownKeys(objExample));
+    p.buff();
 
-p.buff(`${p.cVar}obj1${p.cNo}`, '█►', obj1);
-p.flush();
+    p.buff(`${p.cVar}objExample${p.cNo}`, '█►', objExample);
+    p.flush();
+}
+
+export {objExample};
