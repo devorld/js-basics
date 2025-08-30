@@ -8,8 +8,8 @@ monolog = monolog || new Monolog();
 function Monolog() {
     this._lines = [];
     this._partsMaxLengths = [];
-    this.printHeader = (text) => console.log(`\n▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ ${text} ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓`)
-    this.printSubHeader = (text) => console.log(`\n░░░░░░░░░░░░░░░░ ${text} ░░░░░░░░░░░░░░░░`)
+    this.printHeader = (text) => this.printLines() || console.log(`\n▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ ${text} ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓`);
+    this.printSubHeader = (text) => this.printLines() || console.log(`\n░░░░░░░░░░░░░░░░ ${text} ░░░░░░░░░░░░░░░░`);
     this.pushStringParts = function (...strParts) {
         strParts.forEach(((part, index, array) => {
             array[index] = castToString(part);
@@ -49,6 +49,9 @@ function castToString(part, nestingLevel = 0) {
         case TN.ARRAY:
             result = nestingLevel > 0 ? '\n' : '';
             result += '    '.repeat(nestingLevel) + `Array(${part.length}) [${part.map(el => castToString(el, nestingLevel + 1)).join(',')}]`;
+            break;
+        case TN.DATE:
+            result = part.toLocaleString();
             break;
         case TN.SET:
             result = new Set(part);
