@@ -59,12 +59,15 @@ function castToString(part, nestingLevel = 0) {
         case TN.MAP:
             result = new Map(part);
             break;
+        case TN.FUNCTION:
+            result = part;
+            break;
         case TN.WEAK_SET:
         case TN.WEAK_MAP:
         case TN.OBJECT:
             const symKeys = Object.getOwnPropertySymbols(part);
             const symProps = symKeys.map(sKey => [sKey, part[sKey]]);
-            result = `${typeName}(${Object.entries(part).length}) ${JSON.stringify(part)}} +SymbolProps: ${castToString(symProps)}`;
+            result = `${typeName}(${Object.entries(part).length}) ${JSON.stringify(part, (k, v) => k === "global" ? "global" : v, ' ')} +SymbolProps: ${castToString(symProps)}`;
             break;
         default:
             result = String(part);
