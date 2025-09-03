@@ -32,6 +32,7 @@ const CTC = {
     reset: CONSOLE_TEXT_COLOR.Reset,
     func: CONSOLE_TEXT_COLOR.FgMagenta,
     var: CONSOLE_TEXT_COLOR.FgBlue,
+    sep: '█►',
 };
 
 debug: {

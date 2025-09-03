@@ -20,6 +20,12 @@ const TYPE_NAME = {
     WEAK_MAP: 'WeakMap',
 }
 
+const getPropNames = (obj) => [...Object.getOwnPropertyNames(obj), ...Object.getOwnPropertySymbols(obj)];
+const getProps = (obj) =>
+    Object.entries(Object.getOwnPropertyDescriptors(obj))
+        .map(propArray => ({[propArray[0]]: propArray[1].value}))
+        .reduce((accumulator, propObj) => Object.assign(accumulator, propObj), {});
+
 function getTypeName(variable) {
     const NULL_TYPE = "null";
     const objType = typeof({})
@@ -72,4 +78,4 @@ if (isMainModule) {
     console.log('obj =', JSON.stringify(obj), Object.entries(obj).length);
 }
 
-export {TYPE_NAME, getTypeName};
+export {TYPE_NAME, getTypeName, getProps, getPropNames};
