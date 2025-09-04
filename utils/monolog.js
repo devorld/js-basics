@@ -8,11 +8,11 @@ monolog = monolog || new Monolog();
 function Monolog() {
     this._lines = [];
     this._partsMaxLengths = [];
-    this.printHeader = (text) => this.printLines() || console.log(`\n▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ ${text} ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓`);
-    this.printSubHeader = (text) => this.printLines() || console.log(`\n░░░░░░░░░░░░░░░░ ${text} ░░░░░░░░░░░░░░░░`);
+    this.printHeader = (text) => this.printLines() || console.log(`\n▓ ${text} ▓`.replaceAll("▓", "▓".repeat(50 - getGraphemeCount(text) / 2)));
+    this.printSubHeader = (text) => this.printLines() || console.log(`\n░ ${text} ░`.replaceAll("░", "░".repeat(50 - getGraphemeCount(text) / 2)));
     this.pushStringParts = function (...strParts) {
         strParts.forEach(((part, index, array) => {
-            array[index] = castToString(part);
+            array[index] = adaptOutput(part);
 
             const length = getGraphemeCount(array[index]);
 
@@ -29,7 +29,7 @@ function Monolog() {
             this._lines.forEach(strParts =>
                 console.log(...strParts.map((str, index) =>
                         str.concat?.(' '.repeat(~~Math.max(this._partsMaxLengths[index] - getGraphemeCount(str), 0))) ?? str
-                    )
+                    ).flat(2)
                 )
             );
         } else {
@@ -41,14 +41,14 @@ function Monolog() {
     };
 }
 
-function castToString(part, nestingLevel = 0) {
+function adaptOutput(part, nestingLevel = 0) {
     const typeName = getTypeName(part);
     let result;
 
     switch (typeName) {
         case TN.ARRAY:
             result = nestingLevel > 0 ? '\n' : '';
-            result += '    '.repeat(nestingLevel) + `Array(${part.length}) [${part.map(el => castToString(el, nestingLevel + 1)).join(',')}]`;
+            result += '    '.repeat(nestingLevel) + `Array(${part.length}) [${part.map(el => adaptOutput(el, nestingLevel + 1)).join(',')}]`;
             break;
         case TN.DATE:
             result = part.toLocaleString();
@@ -60,14 +60,15 @@ function castToString(part, nestingLevel = 0) {
             result = new Map(part);
             break;
         case TN.FUNCTION:
-            result = part;
+            result = [part, "\n",
+                {name: part.name, hasArgs: part.hasOwnProperty("arguments"), length: part.length}];
             break;
         case TN.WEAK_SET:
         case TN.WEAK_MAP:
         case TN.OBJECT:
             const symKeys = Object.getOwnPropertySymbols(part);
             const symProps = symKeys.map(sKey => [sKey, part[sKey]]);
-            result = `${typeName}(${Object.entries(part).length}) ${JSON.stringify(part, (k, v) => k === "global" ? "global" : v, ' ')} +SymbolProps: ${castToString(symProps)}`;
+            result = `${typeName}(${Object.entries(part).length}) ${JSON.stringify(part, (k, v) => k === "global" ? "global" : v, ' ')} +SymbolProps: ${adaptOutput(symProps)}`;
             break;
         default:
             result = String(part);
