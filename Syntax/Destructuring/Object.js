@@ -1,4 +1,4 @@
-import {objExample} from '../../Types/Object/index.js'
+import {objSymExample} from '../../Types/Object/create.js'
 import {CTC} from '../../utils/console.js'
 import {printer} from '../../utils/monolog.js'
 
@@ -37,8 +37,8 @@ p.flush();
 
 p.head(`{ ${clr.var}a${clr.reset}, ${clr.var}b${clr.reset}, ${clr.var}c${clr.reset} } = objExample`);
 
-let {a, b, c} = objExample;
-p.buff(`${clr.var}objExample${clr.reset}`, "█►", objExample);
+let {a, b, c} = objSymExample;
+p.buff(`${clr.var}objExample${clr.reset}`, "█►", objSymExample);
 p.buff(`${clr.var}a${clr.reset}`, "█►", a); // a === 1
 p.buff(`${clr.var}b${clr.reset}`, "█►", b); // b === 3
 p.buff(`${clr.var}c${clr.reset}`, "█►", c); // c === Symbol(4)
@@ -47,28 +47,28 @@ p.flush();
 
 p.title("Symbolic props")
 
-const sym8 = Symbol(8);
+const sym7 = Symbol(7);
 const symH = Symbol('h');
-p.buff(`${clr.var}objExample[sym8]${clr.reset}`, "█►", objExample[sym8]); // undefined
-p.buff(`${clr.var}objExample[symH]${clr.reset}`, "█►", objExample[symH]); // undefined
-objExample[sym8] = 88;
-objExample[symH] = 'HH';
-p.buff(`${clr.func}objExample[sym8]${clr.reset} = 88`, "█►", objExample[sym8] = 88);
-p.buff(`${clr.func}objExample[symH]${clr.reset} = 'HH'`, "█►", objExample[symH] = 'HH');
-p.buff(`${clr.var}objExample${clr.reset}`, "█►", objExample);
+p.buff(`${clr.var}objExample[sym7]${clr.reset}`, "█►", objSymExample[sym7]); // undefined
+p.buff(`${clr.var}objExample[symH]${clr.reset}`, "█►", objSymExample[symH]); // undefined
+objSymExample[sym7] = 77;
+objSymExample[symH] = 'HH';
+p.buff(`${clr.func}objExample[sym7]${clr.reset} = 77`, "█►", objSymExample[sym7] = 77);
+p.buff(`${clr.func}objExample[symH]${clr.reset} = 'HH'`, "█►", objSymExample[symH] = 'HH');
+p.buff(`${clr.var}objExample${clr.reset}`, "█►", objSymExample);
 p.flush();
-p.buff(`${clr.var}objExample[sym8]${clr.reset}`, "█►", objExample[sym8], typeof objExample[sym8]); // 88
-p.buff(`${clr.var}objExample[symH]${clr.reset}`, "█►", objExample[symH], typeof objExample[symH]); // 'HH'
+p.buff(`${clr.var}objExample[sym7]${clr.reset}`, "█►", objSymExample[sym7], typeof objSymExample[sym7]); // 77
+p.buff(`${clr.var}objExample[symH]${clr.reset}`, "█►", objSymExample[symH], typeof objSymExample[symH]); // 'HH'
 p.flush();
 
 
-p.title(`naming {"5": ${clr.var}propFive${clr.reset}, [sym8]: ${clr.var}propSym8${clr.reset}, [symH]: ${clr.var}propSymH${clr.reset}} = objExample`)
-// p.title(`target prop naming {"5": ${clr.var}propFive${clr.reset}, [sym8]: ${clr.var}propSym8${clr.reset}, [symH]: ${clr.var}propSymH${clr.reset}} = objExample`)
+p.title(`naming {"5": ${clr.var}propFive${clr.reset}, [sym7]: ${clr.var}propSym7${clr.reset}, [symH]: ${clr.var}propSymH${clr.reset}} = objExample`)
+// p.title(`target prop naming {"5": ${clr.var}propFive${clr.reset}, [sym7]: ${clr.var}propSym7${clr.reset}, [symH]: ${clr.var}propSymH${clr.reset}} = objSymExample`)
 
-let {"5": propFive, [sym8]: propSym8, [symH]: propSymH} = objExample;
-p.buff(`${clr.var}objExample${clr.reset}`, "█►", objExample);
+let {"5": propFive, [sym7]: propSym7, [symH]: propSymH} = objSymExample;
+p.buff(`${clr.var}objExample${clr.reset}`, "█►", objSymExample);
 p.buff(`${clr.var}propFive${clr.reset}`, "█►", propFive); // propFive === d
-p.buff(`${clr.var}propSym8${clr.reset}`, "█►", propSym8); // propSym8 === 88
+p.buff(`${clr.var}propSym7${clr.reset}`, "█►", propSym7); // propSym7 === 77
 p.buff(`${clr.var}propSymH${clr.reset}`, "█►", propSymH); // propSymH === HH
 p.flush();
 
