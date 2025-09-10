@@ -41,6 +41,11 @@ p.buff(`Date${clr.func}.parse${clr.reset}(YYYY-MM-DDTHH:mm:ss.sssZ)`, '█►', 
 
 p.head("PRINT");
 
+p.buff(`new Date()${clr.func}.toISOString().split(/[TZ]/)[1]${clr.reset}`,
+    ...[dates.dt = new Date().toISOString().split(/[TZ]/)[1],
+        '█►',
+        typeof dates.dt].reverse());
+p.buff();
 p.buff(`new Date()${clr.func}.toString${clr.reset}()`, ...[dates.dt = dates.object.toString(), '█►', typeof dates.dt].reverse());
 p.buff(`new Date()${clr.func}.toUTCString${clr.reset}()`, ...[dates.dt = dates.object.toUTCString(), '█►', typeof dates.dt].reverse());
 p.buff(`new Date()${clr.func}.toISOString${clr.reset}()`, ...[dates.dt = dates.object.toISOString(), '█►', typeof dates.dt].reverse());

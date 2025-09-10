@@ -35,7 +35,7 @@ function getTypeName(variable) {
 
     if (typeStr !== objType) return typeStr;
 
-    typeStr = variable?.constructor?.name
+    typeStr = variable?.constructor?.name ?? TYPE_NAME.OBJECT
 
     return typeStr;
 }
