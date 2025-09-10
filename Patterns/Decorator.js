@@ -29,4 +29,4 @@ console.log("Result for 2:", calculate(2));
 console.log("Run again for 1:", calculate(2));
 console.log(...[JSON.stringify({
     v: cachingDecorator,
-}, (k, v) => k === "global" ? "?global?" : v === undefined ? "?undefined?" : typeof(v) === "function" ? Object.getOwnPropertyNames(v).reduce((acc, k) => Object.assign(acc, {[k]: v[k]}), {"?type?": "function"}) : v, 1).replaceAll(/\\r\\n/g, "\r\n"), "█►", new Date().toISOString().split(/[TZ]/)[1], "█►"].reverse()); // mga TODO: show functions as objects
+}, (k, v) => k === "global" ? "?global?" : v === undefined ? "?undefined?" : typeof(v) === "function" ? Object.getOwnPropertyNames(v).reduce((acc, k) => Object.assign(acc, {[k]: v[k]}), {"?type?": "function"}) : v, 1).replaceAll(/\\r\\n/g, "\r\n"), "█►", new Date().toISOString().split(/[TZ]/)[1], "█►"].reverse());
