@@ -2,7 +2,7 @@ import {getTypeName, TYPE_NAME as TN} from '../Types/_identify.js';
 import {CONSOLE_TEXT_COLOR, CTC} from './console.js'
 import {getGraphemeCount} from "./graphemes.js";
 
-const MAX_NEST_LEVEL = 0;
+const MAX_NEST_LEVEL = 2;
 
 let monolog;
 
@@ -91,9 +91,13 @@ function adaptOutput(part, nestingLevel = 0) {
                                     ? adaptOutput(v, nestingLevel + 1)
                                     : replaceFunctionCode(v)
                         ,
-                        4).replaceAll(/\\r\\n/g, "\r\n").replaceAll(/\\n/g, "\n    ").replaceAll(/\\"/g, "\"")
+                        4)
+                        .replaceAll(/\\r\\n/g, "\r\n")
+                        .replaceAll(/\\n/g, "\n    ")
+                        .replaceAll(/\\"/g, "\"")
+                        .replaceAll(/\\u001b\[34m|\\u001b\[36m|\\u001b\[0m/g, "")
                 )
-            } +SymbolProps: ${adaptOutput(symProps, nestingLevel + 1)}`;
+            }`.concat(!symKeys.length ? "" : ` +SymbolProps: ${adaptOutput(symProps, nestingLevel + 1)}`);
             break;
         default:
             try {
@@ -120,7 +124,9 @@ function highlightFunctionNativeCode(str) {
     if (typeof str !== "string" || !str.length || str.search("[native code]") < 0) {
         return str;
     } else {
-        return str.replaceAll(/(\[native code])/g, `${CONSOLE_TEXT_COLOR.FgCyan}$1${CTC.reset}`)
+        return str
+            .replaceAll(/(\[native code])/g, `${CONSOLE_TEXT_COLOR.FgCyan}$1${CTC.reset}`)
+            .replaceAll(/(\[object Object])/g, `${CTC.var}$1${CTC.reset}`)
     }
 }
 
