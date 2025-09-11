@@ -1,4 +1,4 @@
-import {rangeObj, powerOfTwo} from '../iterate.js'
+import {rangeObj, powerOfTwo} from '../interface/iterate.js'
 import {monolog} from '../../../utils/monolog.js'
 import {CONSOLE_TEXT_COLOR} from '../../../utils/console.js'
 

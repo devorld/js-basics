@@ -1,4 +1,4 @@
-import {rangeObj} from '../Types/Object/iterate.js'
+import {rangeObj} from '../Types/Object/interface/iterate.js'
 import {CTC} from '../utils/console.js'
 import {printer} from '../utils/monolog.js'
 
