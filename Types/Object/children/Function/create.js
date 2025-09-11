@@ -17,6 +17,7 @@ const functionExpression1 = {
       #type: "function",
       #[[Environment]]: GlobalSC, |<--- ВСЕГДА ТОЛЬКО и СРАЗУ =-> globalThis
       #[[Scopes]]: [GlobalSC]}; |<--- ВСЕГДА ТОЛЬКО и СРАЗУ =-> globalThis
+      #[[Prototype]]: Function.prototype = null | { constructor: Function }
 */
 
 const functionExpression2 = function () {
