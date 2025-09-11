@@ -35,7 +35,10 @@ function getTypeName(variable) {
 
     if (typeStr !== objType) return typeStr;
 
-    typeStr = variable?.constructor?.name ?? TYPE_NAME.OBJECT
+    // only "object" gets to this logic below
+    typeStr = variable?.constructor?.name ?? TYPE_NAME.OBJECT;
+
+    typeStr = Object.values(TYPE_NAME).includes(typeStr) ? typeStr : TYPE_NAME.OBJECT;
 
     return typeStr;
 }
