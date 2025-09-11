@@ -2,7 +2,8 @@ import {getTypeName, TYPE_NAME as TN} from '../Types/_identify.js';
 import {CONSOLE_TEXT_COLOR, CTC} from './console.js'
 import {getGraphemeCount} from "./graphemes.js";
 
-const MAX_NEST_LEVEL = 2;
+const MAX_NEST_LEVEL = 5;
+const EXPOSE_FUNCTIONS = false;
 
 let monolog;
 
@@ -66,24 +67,28 @@ function adaptOutput(part, nestingLevel = 0) {
             result = new Map(part);
             break;
         case TN.FUNCTION:
-            result = adaptOutput({type: "?function?", ...Object.fromEntries(Object.entries(Object
+            result = EXPOSE_FUNCTIONS
+                ? adaptOutput({type: "?function?", ...Object.fromEntries(Object.entries(Object
                     .getOwnPropertyDescriptors(part)).map(
                     ([k, v]) => [k,
                         nestingLevel < MAX_NEST_LEVEL
                             ? adaptOutput(v?.value, nestingLevel + 1)
                             : replaceFunctionCode(v)]
                 )
-            )}, nestingLevel + 1);
+            )}, nestingLevel + 1)
+            : replaceFunctionCode(part);
             break;
         case TN.WEAK_SET:
         case TN.WEAK_MAP:
         case TN.OBJECT:
             const symKeys = Object.getOwnPropertySymbols(part);
             const symProps = symKeys.map(sKey => [sKey, part[sKey]]);
+            const viewObj = {...part, "[[Prototype]]": Object.getPrototypeOf(part)};
+
             result = `${typeName}(${Object.entries(part).length}) ${
                 highlightFunctionNativeCode(
-                    JSON.stringify(part,
-                        (k, v) => v === part
+                    JSON.stringify(viewObj,
+                        (k, v) => v === viewObj
                             ? v
                             : k === "global"
                                 ? "?global?"
@@ -125,6 +130,7 @@ function highlightFunctionNativeCode(str) {
         return str;
     } else {
         return str
+            .replaceAll(/(\[\[Prototype]])/g, `${CONSOLE_TEXT_COLOR.FgCyan}$1${CTC.reset}`)
             .replaceAll(/(\[native code])/g, `${CONSOLE_TEXT_COLOR.FgCyan}$1${CTC.reset}`)
             .replaceAll(/(\[object Object])/g, `${CTC.var}$1${CTC.reset}`)
     }
