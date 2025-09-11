@@ -19,10 +19,21 @@ if (isMainModule) {
     p.buff(`${p.cVar}objExample${p.cNo}`, '█►', objSymExample);
     p.flush();
 
+    // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ (for .. in) -- objSymExample and [[Prototype]]es ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+    p.head("(for .. in) -- objSymExample and [[Prototype]]es")
+
+    const props = Object.create(null);
+
+    for (let pName in objSymExample) {
+        props[pName] = objSymExample.hasOwnProperty(pName) ? "self" : "inherited";
+    }
+
+    p.buff(`${p.cProp}props${p.cNo}`, `\n█►`, props);
+
     p.head("without Symbolic keys");
-    p.title(".keys() .values() .entries()");
+    p.title(`${p.cProp}.keys() .values() .entries()${p.cNo} - only {enumerable: true}, ❌ no [[Prototype]] properties`);
     p.buff(`JSON${p.cProp}.stringify${p.cNo}(objExample)`, '█►', JSON.stringify(objSymExample));
-    p.buff(`Object${p.cProp}.keys${p.cNo}(objExample)`, '█►', Object.keys(objSymExample));
+        p.buff(`Object${p.cProp}.keys${p.cNo}(objExample)`, '█►', Object.keys(objSymExample));
     p.buff(`Object${p.cProp}.values${p.cNo}(objExample)`, '█►', Object.values(objSymExample));
     p.buff(`Object${p.cProp}.entries${p.cNo}(objExample)`, '█►', Object.entries(objSymExample));
     p.buff(`Object${p.cProp}.getOwnPropertyNames${p.cNo}(objExample)`, '█►', Object.getOwnPropertyNames(objSymExample));
