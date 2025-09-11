@@ -1,5 +1,5 @@
-import {monolog} from '../../utils/monolog.js'
-import {CONSOLE_TEXT_COLOR} from '../../utils/console.js'
+import {monolog} from '../../../utils/monolog.js'
+import {CONSOLE_TEXT_COLOR} from '../../../utils/console.js'
 
 // noinspection JSUnresolvedReference - analogue of __name__ == "__main__"
 const isMainModule = import.meta.main;

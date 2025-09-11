@@ -1,7 +1,7 @@
 import {CONSOLE_TEXT_COLOR} from '../../../utils/console.js'
 import {monolog} from '../../../utils/monolog.js'
 
-import {powerOfTwo} from '../iterate.js'
+import {powerOfTwo} from '../interface/iterate.js'
 
 const p = {
     head: monolog?.printHeader || console.log,
