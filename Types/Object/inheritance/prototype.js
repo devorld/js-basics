@@ -1,6 +1,6 @@
 import {CTC} from '../../../utils/console.js'
 import {printer} from '../../../utils/monolog.js'
-import {remapDescriptors} from '../properties/descriptors.js'
+
 
 const clr = new Proxy(CTC ?? {}, {get: (t, p) => t?.[p] || ""})
 const p = new Proxy(printer ?? {}, {get: (t, f) => t?.[f] || console.log})
@@ -141,8 +141,8 @@ p.flush();
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ Object.prototype ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 p.head("Object.prototype")
 
-p.buff(`${clr.func}remapDescriptors${clr.reset}(${clr.var}Object.prototype${clr.reset})`, `\n${clr.sep}`, remapDescriptors(Object.prototype));
-p.buff(`${clr.func}remapDescriptors${clr.reset}(${clr.var}Object.prototype.constructor${clr.reset})`, `\n${clr.sep}`, remapDescriptors(Object.prototype.constructor));
+p.buff(`${clr.var}Object.prototype${clr.reset}`, `\n${clr.sep}`, Object.prototype);
+p.buff(`${clr.var}Object.prototype.constructor${clr.reset}`, `\n${clr.sep}`, Object.prototype.constructor);
 p.flush();
 
 const getFunc = Object.getOwnPropertyDescriptors(Object.prototype)["__proto__"]["get"];

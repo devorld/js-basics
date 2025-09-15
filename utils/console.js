@@ -40,10 +40,11 @@ const CTC = {
     nsep: "\n█►",
 };
 
-const clr = CTC;
-const p = new Proxy(printer ?? {}, {get: (t, f) => t?.[f] || console.log});
 
-function printAll(obj, headText = `${clr.func}console.${clr.reset}$display$()`) {
+function printAll(obj, headText = `${CTC.func}console.${CTC.reset}$display$()`) {
+    const clr = CTC;
+    const p = new Proxy(printer ?? {}, {get: (t, f) => t?.[f] || console.log});
+
     p.head(headText);
 
     p.title(`console${clr.func}.table${clr.reset}(obj)`);
