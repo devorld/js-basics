@@ -23,6 +23,7 @@ let key = 999, value = 999;
 
 // noinspection JSCheckFunctionSignatures
 const mapObj = new Map(array);
+
 p.buff(`${p.cVar}mapObj${p.cNo}`, '█►');
 p.flush();
 
@@ -88,3 +89,15 @@ p.flush();
 
 p.buff('█►', Object.fromEntries(mapFrom_ArrayOfPairs));
 p.flush();
+
+const maps = new Map([[1, 1], [2, 2], [3, new Map([['a', 'a'], ['b', new Map([[1, 1]])]])]]);
+
+// noinspection JSCheckFunctionSignatures - special data accessed by ref
+mapObj.set(0, maps);
+console.log(new Map([[1, 1], [2, 2], [3, new Map([['a', 'a'], ['b', new Map([[1, 1]])]])]]));
+console.log(mapObj);
+p.buff('█►', mapObj);
+p.flush();
+console.log({wrap: {mapObj}});
+console.dir(Object.getOwnPropertyDescriptors(mapObj), {showHidden: true});
+console.log("JSON:", JSON.stringify({wrap: {mapObj}}));
