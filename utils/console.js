@@ -69,28 +69,22 @@ const isMainModule = import.meta.main;
 if (isMainModule) {
     printAll(objSymExample);
 
-    debug: {
-        break debug;
+    console.log(`${CONSOLE_TEXT_COLOR.FgBlue}Lorem ipsum${CONSOLE_TEXT_COLOR.Reset}`);
 
-        // disabled till debugging
-        // noinspection UnreachableCodeJS
-        console.log(`${CONSOLE_TEXT_COLOR.FgBlue}Lorem ipsum${CONSOLE_TEXT_COLOR.Reset}`);
+    // region Group - Object under the hood
+    console.groupCollapsed('Group - Object under the hood');
 
-        // region Group - Object under the hood
-        console.groupCollapsed('Group - Object under the hood');
+    console.dir(Object, {showHidden: true, colors: true, depth: null});
 
-        console.dir(Object, {showHidden: true, colors: true, depth: null});
+    console.groupEnd();
+    // endregion
 
-        console.groupEnd();
-        // endregion
+    console.table(Object.getOwnPropertyDescriptors(Object));
 
-        console.table(Object.getOwnPropertyDescriptors(Object));
+    console.assert(CONSOLE_TEXT_COLOR.hasOwnProperty('BgGray'), 'Color %s not found!', 'gray');
+    console.assert(CONSOLE_TEXT_COLOR.hasOwnProperty('BgGrey'), `${CONSOLE_TEXT_COLOR.BgRed}Color %s not found!${CONSOLE_TEXT_COLOR.Reset}`, 'grey');
 
-        console.assert(CONSOLE_TEXT_COLOR.hasOwnProperty('BgGray'), 'Color %s not found!', 'gray');
-        console.assert(CONSOLE_TEXT_COLOR.hasOwnProperty('BgGrey'), `${CONSOLE_TEXT_COLOR.BgRed}Color %s not found!${CONSOLE_TEXT_COLOR.Reset}`, 'grey');
-
-        console.trace('Lorem', 'ipsum', 0);
-    }
+    console.trace('Lorem', 'ipsum', 0);
 }
 
 export {CONSOLE_TEXT_COLOR, CTC, printAll};
