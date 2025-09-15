@@ -14,8 +14,13 @@ console.log(`value4 █► ${value4}`);
 console.log(value1 === value2, value2 === value3, value3 === value4);
 
 function Constructor() {
-    this.a = 1;
-    this.getA = function () {
-        return this.a;
+    try {
+        this.a = 1;
+        // noinspection JSUnusedGlobalSymbols - example
+        this.getA = function () {
+            return this.a;
+        }
+    } catch (e) {
+        console.error(e.name, e.message);
     }
 }
