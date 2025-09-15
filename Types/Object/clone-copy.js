@@ -1,5 +1,5 @@
 import {CTC, printAll} from '../../utils/console.js'
-import {adaptOutput} from '../../utils/formatter.js'
+import {formatter as fer} from '../../utils/formatter.js'
 import {printer} from '../../utils/monolog.js'
 import {objShallowCopyAndChild, ySymProp} from './_examples.js'
 
@@ -82,7 +82,7 @@ const _clone = (variable, method = CloneCopyMethods.byDescriptorsValuesRecursive
             );
     }
 
-    throw new Error("Reached unreachable code corner");
+    throw new Error("Reached unreachable corner of code");
 };
 
 // noinspection JSUnresolvedReference - analogue of __name__ == "__main__"
@@ -103,17 +103,17 @@ if (isMainModule) {
 
     p.title("Cloning results: clonedByDtorsClonedValuesChild, clonedByDtorsChild, clonedByKeysChild")
 
-    p.buff(`👍  [Getter/Setter] - adaptOutput(clonedByDtorsClonedValuesChild)`, clr.nsep, clonedByDtorsClonedValuesChild);
-    p.buff(`👍  [Getter/Setter] - adaptOutput(clonedByDtorsChild)`, clr.nsep, clonedByDtorsChild);
-    p.buff(`❌  [Getter/Setter] -> props adaptOutput(clonedByKeysChild)`, clr.nsep, clonedByKeysChild);
+    p.buff(`👍  [Getter/Setter] - ${clr.var}clonedByDtorsClonedValuesChild${clr.reset}`, clr.nsep, clonedByDtorsClonedValuesChild);
+    p.buff(`👍  [Getter/Setter] - ${clr.var}clonedByDtorsChild${clr.reset}`, clr.nsep, clonedByDtorsChild);
+    p.buff(`❌  [Getter/Setter] - ${clr.var}clonedByKeysChild${clr.reset}`, clr.nsep, clonedByKeysChild);
     p.flush();
 
 
     p.title("Cloning results: clonedByDtorsClonedValuesChild, clonedByDtorsChild, clonedByKeysChild")
-    p.buff(`adaptOutput(01👍, 02, 03❌ ) === adaptOutput(02👍, 03❌ , 01)`, clr.sep,
-        adaptOutput(clonedByDtorsClonedValuesChild) === adaptOutput(clonedByDtorsChild),
-        adaptOutput(clonedByDtorsChild) === adaptOutput(clonedByKeysChild),
-        adaptOutput(clonedByKeysChild) === adaptOutput(clonedByDtorsClonedValuesChild),
+    p.buff(`fer.anyToString(01👍, 02, 03❌ ) === fer.anyToString(02👍, 03❌ , 01)`, clr.sep,
+        fer.anyToString(clonedByDtorsClonedValuesChild) === fer.anyToString(clonedByDtorsChild),
+        fer.anyToString(clonedByDtorsChild) === fer.anyToString(clonedByKeysChild),
+        fer.anyToString(clonedByKeysChild) === fer.anyToString(clonedByDtorsClonedValuesChild),
     );
     p.flush();
 
@@ -129,9 +129,9 @@ if (isMainModule) {
     setRefValue(clonedByKeysChild, "03 clonedByKeysChild");
     setParentRefValue(clonedByKeysChild, "PARENT: 03 clonedByKeysChild");
 
-    p.buff(`👍  [Getter/Setter] - adaptOutput(clonedByDtorsClonedValuesChild)`, clr.nsep, clonedByDtorsClonedValuesChild);
-    p.buff(`👍  [Getter/Setter] - adaptOutput(clonedByDtorsChild)`, clr.nsep, clonedByDtorsChild);
-    p.buff(`❌  [Getter/Setter] -> props adaptOutput(clonedByKeysChild)`, clr.nsep, clonedByKeysChild);
+    p.buff(`👍  [Getter/Setter] - ${clr.var}clonedByDtorsClonedValuesChild${clr.reset}`, clr.nsep, clonedByDtorsClonedValuesChild);
+    p.buff(`👍  [Getter/Setter] - ${clr.var}clonedByDtorsChild${clr.reset}`, clr.nsep, clonedByDtorsChild);
+    p.buff(`❌  [Getter/Setter] - ${clr.var}clonedByKeysChild${clr.reset}`, clr.nsep, clonedByKeysChild);
     p.flush();
 
 
