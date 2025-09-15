@@ -1,6 +1,7 @@
 import {CTC} from '../../utils/console.js'
 import {printer} from '../../utils/monolog.js'
 import {objSymExample} from './create.js'
+import {objShallowCopyAndChild} from './_examples.js'
 
 const clr = new Proxy(CTC ?? {}, {get: (t, p) => t?.[p] || ""})
 const p = new Proxy(printer ?? {}, {get: (t, f) => t?.[f] || console.log})
@@ -27,6 +28,9 @@ p.buff(`${clr.var}objSymChild${clr.reset}`, `\n${clr.sep}`, objSymChild);
 // ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ All, non-symbol, symbol properties: keys and values ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 p.head("All, non-symbol, symbol properties: keys and values");
 
+
+p.head(`${clr.var}objSymChild${clr.reset}`);
+
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ All = 8 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 p.title("All = 8");
 p.buff(`${clr.func}Reflect.ownKeys${clr.reset}(objSymChild)`, clr.sep, Reflect.ownKeys(objSymChild));
@@ -41,7 +45,7 @@ p.flush({keepMaxLengths: true})
 p.title("non-symbol only enumerable keys = 5");
 p.buff(`Object${clr.func}.keys${clr.reset}(objSymChild)`, clr.sep, Object.keys(objSymChild));
 
-const keysForIn = [];
+let keysForIn = [];
 
 for (let key in objSymChild) {
     keysForIn.push(key);
@@ -56,4 +60,38 @@ p.flush({keepMaxLengths: true})
 // ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ symbol all keys = 2 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 p.title("symbol all keys = 2");
 p.buff(`Object${clr.func}.getOwnPropertySymbols${clr.reset}(objSymChild)`, clr.sep, Object.getOwnPropertySymbols(objSymChild));
+p.flush();
+
+
+p.head(`${clr.var}objShallowCopyAndChild${clr.reset}`);
+
+// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ All = 31 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+p.title("All = 31");
+p.buff(`${clr.func}Reflect.ownKeys${clr.reset}(objShallowCopyAndChild)`, clr.sep, Reflect.ownKeys(objShallowCopyAndChild));
+p.flush({keepMaxLengths: true})
+
+// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ non-symbol all keys = 21 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+p.title("non-symbol all keys = 21");
+p.buff(`Object${clr.func}.getOwnPropertyNames${clr.reset}(objShallowCopyAndChild)`, clr.sep, Object.getOwnPropertyNames(objShallowCopyAndChild));
+p.flush({keepMaxLengths: true})
+
+// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ non-symbol only enumerable keys = 13 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+p.title("non-symbol only enumerable keys = 13");
+p.buff(`Object${clr.func}.keys${clr.reset}(objShallowCopyAndChild)`, clr.sep, Object.keys(objShallowCopyAndChild));
+
+keysForIn = [];
+
+for (let key in objShallowCopyAndChild) {
+    keysForIn.push(key);
+}
+
+p.buff(`(${clr.func}for .. in ${clr.var}objShallowCopyAndChild${clr.reset})`, clr.sep, keysForIn);
+
+p.buff(`Object${clr.func}.values${clr.reset}(objShallowCopyAndChild)`, clr.sep, Object.values(objShallowCopyAndChild));
+p.buff(`Object${clr.func}.entries${clr.reset}(objShallowCopyAndChild)`, clr.sep, Object.entries(objShallowCopyAndChild));
+p.flush({keepMaxLengths: true})
+
+// ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ symbol all keys = 10 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+p.title("symbol all keys = 10");
+p.buff(`Object${clr.func}.getOwnPropertySymbols${clr.reset}(objShallowCopyAndChild)`, clr.sep, Object.getOwnPropertySymbols(objShallowCopyAndChild));
 p.flush();
