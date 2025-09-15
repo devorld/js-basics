@@ -8,150 +8,224 @@ const FunctionGranularity = {
     ObjectUniqueProps: "ObjectUniqueProps",
 };
 
-const MAX_NEST_LEVEL = 0;
-const EXPOSE_FUNCTIONS = FunctionGranularity.ObjectUniqueProps;
+const formatter = {
+    MAX_NEST_LEVEL: 9,
+    EXPOSE_FUNCTIONS: FunctionGranularity.ObjectUniqueProps,
+    rootPrototypes: [Object.prototype, Function.prototype],
+    functionStandardPropsNames: ["length", "name", "arguments", "caller", "constructor", "length", "name", "prototype"],
 
-function adaptOutput(part, nestingLevel = 0) {
-    const typeName = getTypeName(part);
-    let result;
+    anyToString: function (part, maxNestLevel = this.MAX_NEST_LEVEL, nestingLevel = 0, willBeStringified = false) {
+        if (!Number.isFinite(nestingLevel) || nestingLevel > maxNestLevel + 1) {
+            return "🤯";
+        }
 
-    switch (typeName) {
-        case TN.SYMBOL:
-            result = String(part);
-            break;
-        case TN.ARRAY:
-            result = nestingLevel > 0 ? '\n' : '';
-            result += '    '.repeat(nestingLevel) + `Array(${part.length}) [${part.map(el => adaptOutput(el, nestingLevel + 1)).join(',')}]`;
-            break;
-        case TN.DATE:
-            result = part.toLocaleString();
-            break;
-        case TN.SET:
-            result = new Set(part);
-            break;
-        case TN.MAP:
-            result = new Map(part);
-            break;
-        case TN.FUNCTION:
-            result = EXPOSE_FUNCTIONS
-                ? adaptOutput({
-                    type: "?function?", ...Object.fromEntries(Object.entries(Object
-                            .getOwnPropertyDescriptors(part)).map(
-                            ([k, v]) => [k,
-                                nestingLevel < MAX_NEST_LEVEL
-                                    ? adaptOutput(v?.value, nestingLevel + 1)
-                                    : funcBodyReplacer(v)]
-                        )
-                    )
-                }, nestingLevel + 1)
-                : funcBodyReplacer(part);
-            break;
-        case TN.WEAK_SET:
-        case TN.WEAK_MAP:
-        case TN.OBJECT:
-            result = `${typeName}(${Object.entries(part).length}) ${
-                highlightSystemCode(
-                    JSON.stringify(
-                        objectExposer(part, MAX_NEST_LEVEL, nestingLevel + 1),
-                        undefined,
-                        4)
-                )
-                    .replaceAll(/\\r\\n/g, "\r\n")
-                    .replaceAll(/\\n/g, "\n    ")
-                    .replaceAll(/\\"/g, "\"")
-                    .replaceAll(/\\u001b\[34m|\\u001b\[35m|\\u001b\[36m|\\u001b\[0m/g, "")
-            }`;
-            break;
-        default:
-            try {
-                result = String(part);
-            } catch (e) {
-                console.error("🐞", getTypeName(part), part, e)
-            }
-            break;
-    }
+        const typeName = getTypeName(part);
+        const typesPassAsIs = [TN.MAP, TN.SET];
+        let result;
 
-    return result;
-}
+        switch (typeName) {
+            case TN.SYMBOL:
+                result = this.symbolToString(part);
+                break;
+            case TN.ARRAY:
+                result = this.arrayToString(part, maxNestLevel, nestingLevel);
+                break;
+            case TN.DATE:
+                result = this.dateToString(part);
+                break;
+            case TN.FUNCTION:
+                result = this.functionToString(part, maxNestLevel, nestingLevel)
+                break;
+            case TN.INSTANCE:
+            case TN.OBJECT:
+                result = this.objectToString(part, maxNestLevel, nestingLevel);
+                break;
+            default:
+                !willBeStringified && typesPassAsIs.includes(typeName)
+                    ? result = part
+                    : result = this.otherToString(part);
+                break;
+        }
 
-function objectExposer(obj, maxNestLevel = 99, nestLevel = 0) {
-    return Object.fromEntries(
-        Reflect.ownKeys(obj).map(
-            key => {
-                const d = Object.getOwnPropertyDescriptor(obj, key);
-                const k = typeof key !== "symbol" ? key : `?${String(key)}?`
-                const v = d?.value;
-                const vType = typeof v;
+        return result;
+    },
 
-                // getter and setter
-                if (d?.writable === undefined) {
-                    return [`${k} ?accessor?>`, Object.assign(Object.create(null), {
-                        get: funcBodyReplacer(d?.get),
-                        set: funcBodyReplacer(d?.set)
-                    })];
+    objectToString: function (obj, maxNestLevel = this.MAX_NEST_LEVEL, nestLevel = 0, skipKeys = []) {
+        if (obj === null) {
+            return `${Object.prototype.toString.call(obj)}`;
+        } else if (nestLevel > maxNestLevel) {
+            return `${Object.prototype.toString.call(obj)}${obj?.constructor?.name}(${Reflect.ownKeys(obj).length})`;
+        } else if (this.rootPrototypes.includes(obj)) {
+            return "[object ?rootPrototype?]";
+        }
+
+        const result = Object.fromEntries(
+            Reflect.ownKeys(obj).filter(key => !skipKeys.includes(key)).map(
+                key => {
+                    const d = Object.getOwnPropertyDescriptor(obj, key);
+                    const k = typeof key !== "symbol" ? key : `?${String(key)}?`
+                    const v = d?.value;
+                    const vType = typeof v;
+
+                    // getter and setter
+                    if (d?.writable === undefined) {
+                        return [`${k} ?accessor?>`, Object.assign(Object.create(null), {
+                            get: this.funcBodyReplacer(d?.get),
+                            set: this.funcBodyReplacer(d?.set)
+                        })];
+                    }
+
+                    return [`${k} ?${vType}?>`, this.anyToString(v, maxNestLevel, nestLevel + 1, true)];
                 }
+            ).concat([[
+                `?[[Prototype]]? ?${typeof Object.getPrototypeOf(obj)}?>`,
+                this.anyToString(Object.getPrototypeOf(obj), maxNestLevel, nestLevel + 1, true),
+            ]])
+        );
 
-                switch (vType) {
-                    case "undefined":
-                        return [`${k} ?${vType}?>`, String(v)];
-                    case "symbol":
-                        return [`${k} ?${vType}?>`, String(v)];
-                    case "function":
-                        return [`${k} ?${vType}?>`, funcBodyReplacer(v)];
-                    case "object":
-                        if (v !== null) {
-                            return nestLevel < maxNestLevel
-                                ? [`${k} ?${vType}?>`, objectExposer(v, maxNestLevel, nestLevel + 1)]
-                                : [`${k} ?${vType}?>`, Object.prototype.toString.call(v)];
-                        }
-                }
+        return `${Object.prototype.toString.call(obj)}${obj?.constructor?.name}(${Reflect.ownKeys(obj).length}) ${
+            this.highlightSystemCode(
+                JSON.stringify(
+                    result,
+                    undefined,
+                    4)
+            )
+        }`;
+    },
 
-                // "null" and ...rest types
-                return [`${k} ?${vType}?>`, v];
-            }
-        ).concat([[
-            `?[[Prototype]]? ?${typeof Object.getPrototypeOf(obj)}?>`,
-            Object.getPrototypeOf(obj) !== null
-                ? nestLevel < maxNestLevel
-                    ? objectExposer(Object.getPrototypeOf(obj), maxNestLevel, nestLevel + 1)
-                    : Object.prototype.toString.call(obj)
-                : null,
-        ]])
-    );
-}
+    functionToString: function (funcObj, maxNestLevel = this.MAX_NEST_LEVEL, nestingLevel = 0) {
+        if (nestingLevel > maxNestLevel) {
+            return this.funcBodyReplacer(funcObj);
+        }
 
-function objectToJSON(obj) {
-    return obj.toString();
-}
+        switch (this.EXPOSE_FUNCTIONS) {
+            case FunctionGranularity.BodyCodeReplacement:
+                return this.funcBodyReplacer(funcObj);
+            case FunctionGranularity.ObjectAllProps:
+                return this.objectToString(funcObj, maxNestLevel, nestingLevel + 1);
+            case FunctionGranularity.ObjectUniqueProps:
+                return this.objectToString(funcObj, maxNestLevel, nestingLevel + 1, this.functionStandardPropsNames);
+            case FunctionGranularity.FullCode:
+                return String(funcObj);
+        }
 
-function functionExposer(funcObj) {
-    switch (EXPOSE_FUNCTIONS) {
-        case FunctionGranularity.ObjectAllProps:
-            return objectToJSON(funcObj); // + type: ?fuction?
-        case FunctionGranularity.ObjectUniqueProps:
-            return "hehe";
-        case FunctionGranularity.FullCode:
-            return String(funcObj);
+        throw new Error("Reached unreachable corner of code");
+    },
+
+    funcBodyReplacer: function (value) {
+        return String(value).replace(/{.*}/s, "{[code]}")
+    },
+
+    highlightSystemCode: function (strValue) {
+        if (typeof strValue !== "string" || !strValue.length) {
+            return strValue;
+        } else {
+            return strValue
+                .replaceAll(/(\?\[\[Prototype]]\?)/g, `${CONSOLE_TEXT_COLOR.FgCyan}$1${CTC.reset}`)
+                .replaceAll(/(\[native code]|\[code])/g, `${CONSOLE_TEXT_COLOR.FgCyan}$1${CTC.reset}`)
+                .replaceAll(/(\[object Object])/g, `${CTC.var}$1${CTC.reset}`)
+                .replaceAll(/(\?function\?>)/g, `${CTC.func}$1${CTC.reset}`)
+                .replaceAll(/\\r\\n/g, "\r\n")
+                .replaceAll(/\\n/g, "\n    ")
+                .replaceAll(/\\"/g, "\"")
+                .replaceAll(/\\u001b\[34m|\\u001b\[35m|\\u001b\[36m|\\u001b\[0m/g, "")
+        }
+    },
+
+    symbolToString(symbol) {
+        return String(symbol);
+    },
+
+    dateToString(date) {
+        return date.toLocaleString();
+    },
+
+    arrayToString(array, maxNestLevel = this.MAX_NEST_LEVEL, nestingLevel = 0) {
+        let result;
+
+        result = nestingLevel > 0 ? '\n' : '';
+        result += '    '.repeat(nestingLevel) + `Array(${array.length}) [${nestingLevel <= maxNestLevel
+            ? array.map(el => this.anyToString(el, maxNestLevel, nestingLevel + 1)).join(',')
+            : "?items?"
+        }]`;
+
+        return result;
+    },
+
+    otherToString(value) {
+        let result;
+
+        try {
+            result = String(value);
+        } catch (error) {
+            console.table({
+                "🐞": error.name,
+                v: value,
+                "getTypeName(v)": getTypeName(value),
+                "typeof v": typeof value,
+                "e.message": error.message,
+            });
+            result = `🐞 ${error.message} 🐞`;
+        }
+
+        return result;
+    },
+};
+
+
+// noinspection JSUnresolvedReference - analogue of __name__ == "__main__"
+const isMainModule = import.meta.main;
+
+if (isMainModule) {
+    const func1 = (v) => v;
+    const func2 = function (v) {
+        return v
+    };
+
+    function func3(v) {
+        return v
     }
-    // case FunctionGranularity.BodyCodeReplacement:
-    // default:
-    return funcBodyReplacer(funcObj);
+
+    const array = [
+        (v) => {
+            return v
+        },
+        new Function(),
+        function (v) {
+            return v
+        },
+        func1,
+        func2,
+        func3,
+    ];
+
+    console.table(array.map(f => ({
+        f,
+        "String(f)": String(f),
+        "Object.prototype.toString.call(f)": Object.prototype.toString.call(f),
+        "formatter.functionToString(f)": formatter.functionToString(f),
+    })));
+
+    array.forEach(f => console.log('\n\n💚',
+        '\n❗',/*"String(f)": */String(f),
+        '❗',/*"FullCode": */{...formatter, EXPOSE_FUNCTIONS: FunctionGranularity.FullCode}.functionToString(f),
+        '❗',/*"BodyCodeReplacement": */{
+            ...formatter,
+            EXPOSE_FUNCTIONS: FunctionGranularity.BodyCodeReplacement
+        }.functionToString(f),
+        '\n❗',/*"ObjectAllProps": */formatter.highlightSystemCode({
+            ...formatter,
+            EXPOSE_FUNCTIONS: FunctionGranularity.ObjectAllProps
+        }.functionToString(f)),
+        '\n❗',/*"ObjectUniqueProps": */formatter.highlightSystemCode({
+            ...formatter,
+            EXPOSE_FUNCTIONS: FunctionGranularity.ObjectUniqueProps
+        }.functionToString(f)),
+    ));
+
+    const temp = {...formatter, EXPOSE_FUNCTIONS: FunctionGranularity.ObjectUniqueProps}.functionToString(array[5]);
+
+    console.log(temp);
 }
 
-function funcBodyReplacer(value) {
-    return String(value).replace(/{.*}/s, "{[code]}")
-}
-
-function highlightSystemCode(strValue) {
-    if (typeof strValue !== "string" || !strValue.length) {
-        return strValue;
-    } else {
-        return strValue
-            .replaceAll(/(\?\[\[Prototype]]\?)/g, `${CONSOLE_TEXT_COLOR.FgCyan}$1${CTC.reset}`)
-            .replaceAll(/(\[native code]|\[code])/g, `${CONSOLE_TEXT_COLOR.FgCyan}$1${CTC.reset}`)
-            .replaceAll(/(\[object Object])/g, `${CTC.var}$1${CTC.reset}`)
-            .replaceAll(/(\?function\?>)/g, `${CTC.func}$1${CTC.reset}`)
-    }
-}
-
-export {adaptOutput};
+export {formatter};

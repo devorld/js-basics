@@ -1,5 +1,4 @@
-// noinspection JSUnresolvedReference - analogue of __name__ == "__main__"
-const isMainModule = import.meta.main;
+import {Fabric} from './Object/class.js'
 
 const TYPE_NAME = {
     UNDEFINED: 'undefined',
@@ -9,15 +8,20 @@ const TYPE_NAME = {
     BIGINT: 'bigint',
     STRING: 'string',
     SYMBOL: 'symbol',
-    ARRAY: 'Array',
-    OBJECT: 'Object',
-    DATE: 'Date',
+
     FUNCTION: 'function',
+
+    OBJECT: 'Object',
+
+    ARRAY: 'Array',
+    DATE: 'Date',
 
     SET: 'Set',
     MAP: 'Map',
     WEAK_SET: 'WeakSet',
     WEAK_MAP: 'WeakMap',
+
+    INSTANCE: 'InstanceObject',
 }
 
 const getPropNames = (obj) => [...Object.getOwnPropertyNames(obj), ...Object.getOwnPropertySymbols(obj)];
@@ -38,10 +42,13 @@ function getTypeName(variable) {
     // only "object" gets to this logic below
     typeStr = variable?.constructor?.name ?? TYPE_NAME.OBJECT;
 
-    typeStr = Object.values(TYPE_NAME).includes(typeStr) ? typeStr : TYPE_NAME.OBJECT;
+    typeStr = Object.values(TYPE_NAME).includes(typeStr) ? typeStr : TYPE_NAME.INSTANCE;
 
     return typeStr;
 }
+
+// noinspection JSUnresolvedReference - analogue of __name__ == "__main__"
+const isMainModule = import.meta.main;
 
 if (isMainModule) {
     const examples = new Map([
@@ -53,26 +60,45 @@ if (isMainModule) {
         ['string', 'a'],
         ['symbol', Symbol(1)],
 
+        ['function', (() => void 0)],
+        ['new Function()', new Function()],
+
+        ['object', {}],
+
+        ['array', []],
+        ['date', new Date()],
+
         ['map', new Map],
         ['set', new Set()],
-        ['array', []],
-        ['object', {}],
-        ['date', new Date()],
-        ['function', (() => void 0)],
+        ['weakMap', new WeakMap],
+        ['weakSet', new WeakSet()],
+
+        ['new Promise()', new Promise(() => {})],
+        ['new Fabric()', new Fabric(null, null)],
     ]);
 
     console.table(Array.from(examples).map(v => v[2] = {
         key: v[0],
         value: v[1],
         typeof: typeof (v[1]),
-        getType: getTypeName(v[1])
+        getType: getTypeName(v[1]),
     }));
-    console.log('');
-    examples.forEach((v, k) => typeof v === 'object' && v !== null && console.log(
+    console.table(Array.from(examples).reduce((acc, v) => Object.assign(acc, {
+        [v[0]]: {
+            "String(v)": String(v[1]),
+            "v.toString()": v[1]?.toString?.(),
+        }
+    }), {}));
+
+    const acc = [];
+
+    console.log('\nv[Symbol.toStringTag]');
+    examples.forEach((v, k) => typeof v === 'object' && v !== null && acc.push({
         k,
-        v[Symbol.toStringTag],
-        v.constructor.name,
-    ));
+        "v[Symbol.toStringTag]": v[Symbol.toStringTag],
+        "v.constructor.name": v.constructor.name,
+    }));
+    console.table(acc);
 
     const date = new Date();
     console.log('date', typeof date, date, date.constructor.name);

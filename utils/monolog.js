@@ -1,4 +1,4 @@
-import {adaptOutput} from './formatter.js'
+import {formatter as fer} from './formatter.js'
 import {getGraphemeCount} from "./graphemes.js";
 
 let monolog;
@@ -12,7 +12,7 @@ function Monolog() {
     this.printSubHeader = (text) => this.printLines() || console.log(`\n░ ${text} ░`.replaceAll("░", "░".repeat(50 - getGraphemeCount(text) / 2)));
     this.pushStringParts = function (...strParts) {
         strParts.forEach(((part, index, array) => {
-            array[index] = adaptOutput(part);
+            array[index] = fer.anyToString(part);
 
             const length = getGraphemeCount(array[index]);
 
