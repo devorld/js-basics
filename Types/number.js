@@ -63,8 +63,8 @@ try {
 
 console.log('\n░░░░░░░░░░░░░░░░ Finite checks ░░░░░░░░░░░░░░░░');
 // noinspection JSCheckFunctionSignatures
-console.log('isNaN        █►',        isFinite('123'),        isFinite('s'),        isFinite(Infinity / Infinity),        isFinite(NaN));
-console.log('Number.isNaN █►', Number.isFinite('123'), Number.isFinite('s'), Number.isFinite(Infinity / Infinity), Number.isFinite(NaN));
+console.log('isFinite        █►',        isFinite('123'),        isFinite('s'),        isFinite(Infinity / Infinity),        isFinite(NaN));
+console.log('Number.isFinite █►', Number.isFinite('123'), Number.isFinite('s'), Number.isFinite(Infinity / Infinity), Number.isFinite(NaN));
 console.log('isFinite === Number.isFinite █►', isFinite === Number.isFinite);
 
 console.log('\n░░░░░░░░░░░░░░░░ non-negativing ░░░░░░░░░░░░░░░░');
