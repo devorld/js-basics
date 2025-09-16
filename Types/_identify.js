@@ -1,4 +1,4 @@
-import {Fabric} from './Object/class.js'
+import {Fabric} from './Object/inheritance/class.js'
 
 const TYPE_NAME = {
     UNDEFINED: 'undefined',

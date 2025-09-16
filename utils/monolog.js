@@ -12,9 +12,12 @@ function Monolog() {
     this.printSubHeader = (text) => this.printLines() || console.log(`\n░ ${text} ░`.replaceAll("░", "░".repeat(50 - getGraphemeCount(text) / 2)));
     this.pushStringParts = function (...strParts) {
         strParts.forEach(((part, index, array) => {
-            array[index] = fer.anyToString(part);
-
             const length = getGraphemeCount(array[index]);
+            let {maxNestLevel} = this;
+
+            maxNestLevel = !Number.isFinite(maxNestLevel) ? undefined : maxNestLevel;
+            array[index] = fer.anyToString(part, maxNestLevel);
+
 
             if (length > 100) return;
 
@@ -42,10 +45,11 @@ function Monolog() {
 }
 
 const printer = {
+    ...monolog,
     head: monolog.printHeader,
     title: monolog.printSubHeader,
-    buff: monolog.pushStringParts?.bind(monolog),
-    flush: monolog.printLines?.bind(monolog),
+    buff: monolog.pushStringParts,
+    flush: monolog.printLines,
 };
 
 export {monolog, printer};
