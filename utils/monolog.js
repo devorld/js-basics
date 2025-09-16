@@ -12,12 +12,12 @@ function Monolog() {
     this.printSubHeader = (text) => this.printLines() || console.log(`\n░ ${text} ░`.replaceAll("░", "░".repeat(50 - getGraphemeCount(text) / 2)));
     this.pushStringParts = function (...strParts) {
         strParts.forEach(((part, index, array) => {
-            const length = getGraphemeCount(array[index]);
             let {maxNestLevel} = this;
 
             maxNestLevel = !Number.isFinite(maxNestLevel) ? undefined : maxNestLevel;
             array[index] = fer.anyToString(part, maxNestLevel);
 
+            const length = getGraphemeCount(array[index]);
 
             if (length > 100) return;
 
