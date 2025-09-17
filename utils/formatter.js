@@ -8,13 +8,22 @@ const FunctionGranularity = {
     ObjectUniqueProps: "ObjectUniqueProps",
 };
 
+const PrototypeType = {
+    Any: "Any",
+    Unique: "Unique",
+    None: "None",
+    _standardObjectProtoRef: Object.prototype,
+    _standardFunctionProtoRef: Function.prototype,
+}
+
 const formatter = {
     MAX_NEST_LEVEL: 9,
     EXPOSE_FUNCTIONS: FunctionGranularity.ObjectUniqueProps,
-    rootPrototypes: [Object.prototype, Function.prototype],
-    functionStandardPropsNames: ["length", "name", "arguments", "caller", "constructor", "length", "name", "prototype"],
+    SHOW_INSTANCE_PROTOTYPE: PrototypeType.Unique,
+    SHOW_FUNCTION_PROTOTYPE: PrototypeType.Unique,
+    functionStandardPropsNames: ["length", "name", "arguments", "caller", "constructor", "length", "name"],
 
-    anyToString: function (part, maxNestLevel = this.MAX_NEST_LEVEL, nestingLevel = 0, willBeStringified = false) {
+    anyToString: function (part, maxNestLevel = this.MAX_NEST_LEVEL, nestingLevel = 0, willBeStringified = false, ctorRef) {
         if (!Number.isFinite(nestingLevel) || nestingLevel > maxNestLevel + 1) {
             return "🤯";
         }
@@ -38,7 +47,7 @@ const formatter = {
                 break;
             case TN.INSTANCE:
             case TN.OBJECT:
-                result = this.objectToString(part, maxNestLevel, nestingLevel);
+                result = this.objectToString(part, maxNestLevel, nestingLevel, [], ctorRef);
                 break;
             default:
                 !willBeStringified && typesPassAsIs.includes(typeName)
@@ -50,37 +59,60 @@ const formatter = {
         return result;
     },
 
-    objectToString: function (obj, maxNestLevel = this.MAX_NEST_LEVEL, nestLevel = 0, skipKeys = []) {
+    objectToString: function (obj, maxNestLevel = this.MAX_NEST_LEVEL, nestLevel = 0, skipKeys = [], ctorRef) {
+        let actualCtorRef = ctorRef;
+
         if (obj === null) {
             return `${Object.prototype.toString.call(obj)}`;
         } else if (nestLevel > maxNestLevel) {
             return `${Object.prototype.toString.call(obj)}${obj?.constructor?.name}(${Reflect.ownKeys(obj).length})`;
-        } else if (this.rootPrototypes.includes(obj)) {
-            return "[object ?rootPrototype?]";
+        } else if (obj === PrototypeType._standardObjectProtoRef) {
+            return `${CONSOLE_TEXT_COLOR.BgGray}[object ?rootObjectPrototype?]${CTC.reset}`;
+        } else if (obj === PrototypeType._standardFunctionProtoRef) {
+            return `${CONSOLE_TEXT_COLOR.BgGray}[object ?rootFunctionPrototype?]${CTC.reset}`;
+        }
+
+        if (typeof obj === "function") {
+            actualCtorRef = obj;
         }
 
         const result = Object.fromEntries(
-            Reflect.ownKeys(obj).filter(key => !skipKeys.includes(key)).map(
-                key => {
-                    const d = Object.getOwnPropertyDescriptor(obj, key);
-                    const k = typeof key !== "symbol" ? key : `?${String(key)}?`
-                    const v = d?.value;
-                    const vType = typeof v;
+            Reflect.ownKeys(obj)
+                .filter(key =>
+                    !skipKeys
+                        .concat(this.SHOW_FUNCTION_PROTOTYPE === PrototypeType.None ? ["prototype"] : [])
+                        .includes(key))
+                .map(key => {
+                        const d = Object.getOwnPropertyDescriptor(obj, key);
+                        const k = typeof key !== "symbol" ? key : `?${String(key)}?`
+                        const v = d?.value;
+                        const vType = typeof v;
 
-                    // getter and setter
-                    if (d?.writable === undefined) {
-                        return [`${k} ?accessor?>`, Object.assign(Object.create(null), {
-                            get: this.funcBodyReplacer(d?.get),
-                            set: this.funcBodyReplacer(d?.set)
-                        })];
+                        if (key === "constructor" &&
+                            this.SHOW_FUNCTION_PROTOTYPE === PrototypeType.Unique &&
+                            v === actualCtorRef) {
+
+                            return [`${k} ?${vType}?>`, "?parentRef?"];
+                        }
+
+                        // getter and setter
+                        if (d?.writable === undefined) {
+                            return [`${k} ?accessor?>`, Object.assign(Object.create(null), {
+                                get: this.funcBodyReplacer(d?.get),
+                                set: this.funcBodyReplacer(d?.set)
+                            })];
+                        }
+
+                        return [`${k} ?${vType}?>`, this.anyToString(v, maxNestLevel, nestLevel + 1, true, actualCtorRef)];
                     }
-
-                    return [`${k} ?${vType}?>`, this.anyToString(v, maxNestLevel, nestLevel + 1, true)];
-                }
-            ).concat([[
-                `?[[Prototype]]? ?${typeof Object.getPrototypeOf(obj)}?>`,
-                this.anyToString(Object.getPrototypeOf(obj), maxNestLevel, nestLevel + 1, true),
-            ]])
+                ).concat(
+                this.SHOW_INSTANCE_PROTOTYPE === PrototypeType.None
+                || (this.SHOW_INSTANCE_PROTOTYPE === PrototypeType.Unique && [PrototypeType._standardObjectProtoRef, PrototypeType._standardFunctionProtoRef].includes(Object.getPrototypeOf(obj)))
+                    ? []
+                    : [[
+                        `?[[Prototype]]? ?${typeof Object.getPrototypeOf(obj)}?>`,
+                        this.anyToString(Object.getPrototypeOf(obj), maxNestLevel, nestLevel + 1, true, actualCtorRef),
+                    ]])
         );
 
         return `${Object.prototype.toString.call(obj)}${obj?.constructor?.name}(${Reflect.ownKeys(obj).length}) ${
@@ -128,7 +160,7 @@ const formatter = {
                 .replaceAll(/\\r\\n/g, "\r\n")
                 .replaceAll(/\\n/g, "\n    ")
                 .replaceAll(/\\"/g, "\"")
-                .replaceAll(/\\u001b\[34m|\\u001b\[35m|\\u001b\[36m|\\u001b\[0m/g, "")
+                .replaceAll(/\\u001b\[34m|\\u001b\[35m|\\u001b\[36m|\\u001b\[0m|\\u001b\[100m/g, "")
         }
     },
 
@@ -156,7 +188,7 @@ const formatter = {
         let result;
 
         try {
-            result = String(value);
+            result = ![undefined, null].includes(value) ? String(value) : `${CONSOLE_TEXT_COLOR.BgGray}${value}${CTC.reset}`;
         } catch (error) {
             console.table({
                 "🐞": error.name,
