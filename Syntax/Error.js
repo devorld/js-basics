@@ -1,3 +1,4 @@
+// noinspection JSUnresolvedReference
 process.on("uncaughtException", (...args) => console.error("> NodeJS > :", ...args));
 
 // full example
@@ -8,7 +9,7 @@ function generateAndProcessError() {
 
         return 1;
 
-        // noinspection ExceptionCaughtLocallyJS
+        // noinspection ExceptionCaughtLocallyJS,UnreachableCodeJS - example
         throw 37331;
 
         /*
@@ -20,6 +21,7 @@ function generateAndProcessError() {
         */
 
         // never reached
+        // noinspection UnreachableCodeJS - example
         return 2;
 
     } catch (error) {
@@ -31,6 +33,7 @@ function generateAndProcessError() {
     } finally {
         console.log("end up");
 
+        // noinspection ReturnInsideFinallyBlockJS - example
         return 30;
     }
 }

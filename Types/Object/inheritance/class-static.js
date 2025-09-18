@@ -11,6 +11,7 @@ import {printer} from '../../../utils/monolog.js'
 */
 
 class ClassWithStatic {
+    // noinspection JSUnusedGlobalSymbols
     static property = "inside class";
 
     static staticMethod(classRef = ClassWithStatic) {
