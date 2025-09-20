@@ -77,3 +77,5 @@ if (isMainModule) {
     p.buff(`instance ${clr.var}iChild${clr.reset}.${clr.func}print23${clr.reset}`, clr.sep, iChild.print23(fax) || '^');
     p.flush();
 }
+
+export {ClassParent};

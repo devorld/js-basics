@@ -47,6 +47,7 @@ p.buff(`Object${clr.func}.keys${clr.reset}(objSymChild)`, clr.sep, Object.keys(o
 
 let keysForIn = [];
 
+// for..in перебирает не-символьные ключи с флагом enumerable, а также ключи прототипов.
 for (let key in objSymChild) {
     keysForIn.push(key);
 }
@@ -81,6 +82,7 @@ p.buff(`Object${clr.func}.keys${clr.reset}(objShallowCopyAndChild)`, clr.sep, Ob
 
 keysForIn = [];
 
+// for..in перебирает не-символьные ключи с флагом enumerable, а также ключи прототипов.
 for (let key in objShallowCopyAndChild) {
     keysForIn.push(key);
 }

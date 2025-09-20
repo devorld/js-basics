@@ -1,5 +1,5 @@
-import {CTC} from '../../../utils/console.js'
-import {printer} from '../../../utils/monolog.js'
+import {CTC} from '../../utils/console.js'
+import {printer} from '../../utils/monolog.js'
 
 const clr = new Proxy(CTC ?? {}, {get: (t, p) => t?.[p] || ""})
 const p = new Proxy(printer ?? {}, {get: (t, f) => t?.[f] || console.log})

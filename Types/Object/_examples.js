@@ -1,6 +1,3 @@
-import {CTC, printAll} from '../../utils/console.js'
-import {printer} from '../../utils/monolog.js'
-
 const makeDataDtor = (value, optionsObj) => ({
     value,
     writable: true,
@@ -122,7 +119,10 @@ const objShallowCopyAndChild = Object.defineProperties(
 // noinspection JSUnresolvedReference - analogue of __name__ == "__main__"
 const isMainModule = import.meta.main;
 
-if (isMainModule) {
+if (isMainModule) (async function () {
+    const {CTC, printAll} = await import('../../utils/console.js');
+    const {printer} = await import('../../utils/monolog.js');
+
     const clr = new Proxy(CTC ?? {}, {get: (t, p) => t?.[p] || ""});
     const p = new Proxy(printer ?? {}, {get: (t, f) => t?.[f] || console.log});
 
@@ -146,6 +146,6 @@ if (isMainModule) {
     }
 
     p.flush();
-}
+}())
 
 export {objSymExample, objShallowCopyAndChild, ySymProp};
