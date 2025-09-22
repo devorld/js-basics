@@ -13,6 +13,23 @@ const objSymExample = {
 const isMainModule = import.meta.main;
 
 if (isMainModule) {
+    const objO1 = Object(1);
+    const objO2 = new Object(1);
+
+    console.log(objO1 === objO2)
+
+    console.dir(objO1, {showHidden: true});
+
+    console.dir(objO2, {showHidden: true});
+
+    console.log("Reflect.getPrototypeOf(objO1) === Reflect.getPrototypeOf(objO2)", Reflect.getPrototypeOf(objO2) === Reflect.getPrototypeOf(objO2));
+
+
+    const objO3 = Object(objO1);
+    const objO4 = new Object(objO1);
+    console.log("Object(objO1) === new Object(objO1) :", objO3 === objO4);
+        console.dir(1, {showHidden: true});
+
     const obj1 = {};
     const obj2 = Object.create(null);
     const obj3 = fabric();

@@ -9,7 +9,7 @@ class ClassParent {
     static _pseudoProtectedA = "sp - just announcing protected by prop name prefix - AA";
     static _pseudoProtectedB = "sp - just announcing protected by prop name prefix - BB";
 
-    // private
+    // private === [[internal-slots]]
     #private1 = "ip - truly private - 1";
     #private2 = "ip - truly private - 2";
 
@@ -18,6 +18,9 @@ class ClassParent {
 
     print = (fax) => fax([this._pseudoProtected1, this._pseudoProtected2, this.#private1, this.#private2].join("\n"));
     static print = (fax) => fax([this._pseudoProtectedA, this._pseudoProtectedB, this.#privateA, this.#privateB].join("\n"));
+
+    _stringifyParentInstance = () =>  [this._pseudoProtected1, this._pseudoProtected2, this.#private1, this.#private2].join("\n");
+    static _stringifyParentClass = () => [this._pseudoProtectedA, this._pseudoProtectedB, this.#privateA, this.#privateB].join("\n");
 }
 
 class ClassChild extends ClassParent {
@@ -38,6 +41,9 @@ class ClassChild extends ClassParent {
 
     print23 = (fax) => fax([this._pseudoProtected1, this._pseudoProtected2, this._pseudoProtected3, this.#private2, this.#private3].join("\n"));
     static printBC = (fax) => fax([this._pseudoProtectedA, this._pseudoProtectedB, this._pseudoProtectedC, this.#privateB, this.#privateC].join("\n"));
+
+    _stringifyChildInstance = () =>  [this._pseudoProtected1, this._pseudoProtected2, this._pseudoProtected3, this.#private2, this.#private3].join("\n");
+    static _stringifyChildClass = () => [this._pseudoProtectedA, this._pseudoProtectedB, this._pseudoProtectedC, this.#privateB, this.#privateC].join("\n");
 }
 
 
@@ -78,4 +84,4 @@ if (isMainModule) {
     p.flush();
 }
 
-export {ClassParent};
+export {ClassChild};

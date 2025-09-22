@@ -86,3 +86,8 @@ object.__proto__ = getter and setter for ref [[Prototype]] to parent object (we 
   func1.[[BoundThis]] = ctx
   func1.[[BoundArgs]] = arg1, arg2
 */
+
+/*
+* const map = new Map();
+* map.[[MapData]] === data
+*/
